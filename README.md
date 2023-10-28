@@ -30,7 +30,7 @@ You can connect to database in docker with following authetication:
 - (eventually I will)
 - db name: app
 
-### Disconnecting 
+## Disconnecting && Terminating
 - make down
 
 ## Docs
