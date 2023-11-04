@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use function PHPUnit\Framework\throwException;
 
 class AppAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -53,7 +54,20 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         // For example:
         // return new RedirectResponse($this->urlGenerator->generate('some_route'));
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_home_page_logged'));
+
+
+        $user = $token->getUser();
+
+        // Check the user's role
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            // Redirect to the app_admin page
+            return new RedirectResponse($this->urlGenerator->generate('admin'));
+        } elseif (in_array('ROLE_USER', $user->getRoles())) {
+            // Redirect to the app_instructeur page
+            return new RedirectResponse($this->urlGenerator->generate('app_home_page_logged'));
+        }
+        //TODO PROPER handle
+        throwException("idk");
     }
 
     protected function getLoginUrl(Request $request): string
