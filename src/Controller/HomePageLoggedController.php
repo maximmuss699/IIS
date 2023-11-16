@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\Device;
+use App\Entity\Systems;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,26 +19,13 @@ class HomePageLoggedController extends AbstractController
     #[Route('/homepage/Logged', name: 'app_home_page_logged')]
     public function index(): Response
     {
-        $deviceRepository = $this->entityManager->getRepository(Device::class);
-        $devices = $deviceRepository->findAll();
+        $systemRepository = $this->entityManager->getRepository(Systems::class);
+        $systems = $systemRepository->findAll();
 
-        $deviceDetails = [];
-        foreach ($devices as $device) {
-            $userAlias = $device->getUserAlias();
-            $typeName = $device->getType()->getName();
-            $parameters = $device->getType()->getParameters();
 
-            // Gather device details in an array
-            $deviceDetails[] = [
-                'device' => $device,
-                'userAlias' => $userAlias,
-                'typeName' => $typeName,
-                'parameters' => $parameters,
-            ];
-        }
 
         return $this->render('home_page_logged/index.html.twig', [
-            'deviceDetails' => $deviceDetails,
+            'systems' => $systems,
         ]);
 
         return $this->render('home_page_logged/index.html.twig', [

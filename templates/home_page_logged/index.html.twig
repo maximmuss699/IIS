@@ -26,11 +26,7 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="app_home_page" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -50,31 +46,19 @@
 
 
 
-<h1>All Devices Details</h1>
+<h1>Systems</h1>
 
     <div class="row">
-        {% for deviceDetail in deviceDetails %}
+        {% for system in systems %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Device ID: {{ deviceDetail.device.id }}</h5>
-                        <p class="card-text">User Alias: {{ deviceDetail.userAlias }}</p>
-                        <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
-                        <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
-                        <ul class="list-group list-group-flush">
-                            {% for parameter in deviceDetail.parameters %}
-                                <li>{{ parameter.name }}</li>
-                                {% set jsonValues = parameter.values %}
-                                <ul>
-                                    {% for value in jsonValues %}
-                                        <li>{{ value }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endfor %}
-                        </ul>
+                        <li><a href="{{ path('app_system_details', {'id': system.id}) }}">View Details</a></li>
+
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+    <li><a href="/system_registration" class="nav-link px-2 text-white">Create system</a></li>
 {% endblock %}

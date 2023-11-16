@@ -24,6 +24,10 @@ class Device
     #[ORM\JoinColumn(nullable: false)]
     private ?Type $Type = null;
 
+    #[ORM\ManyToOne(inversedBy: 'Devices')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Systems $systems = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,6 +72,18 @@ class Device
     public function setType(Type $Type): static
     {
         $this->Type = $Type;
+
+        return $this;
+    }
+
+    public function getSystems(): ?Systems
+    {
+        return $this->systems;
+    }
+
+    public function setSystems(?Systems $systems): static
+    {
+        $this->systems = $systems;
 
         return $this;
     }
