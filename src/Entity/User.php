@@ -35,9 +35,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Systems::class, inversedBy: 'users')]
     private Collection $Systems;
 
+    #[ORM\OneToMany(mappedBy: 'userOwner', targetEntity: Systems::class, orphanRemoval: true)]
+    private Collection $CreatedSystems;
+
     public function __construct()
     {
         $this->Systems = new ArrayCollection();
+        $this->CreatedSystems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +134,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSystem(Systems $system): static
     {
         $this->Systems->removeElement($system);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Systems>
+     */
+    public function getCreatedSystems(): Collection
+    {
+        return $this->CreatedSystems;
+    }
+
+    public function addCreatedSystem(Systems $createdSystem): static
+    {
+        if (!$this->CreatedSystems->contains($createdSystem)) {
+            $this->CreatedSystems->add($createdSystem);
+            $createdSystem->setUserOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedSystem(Systems $createdSystem): static
+    {
+        if ($this->CreatedSystems->removeElement($createdSystem)) {
+            // set the owning side to null (unless already changed)
+            if ($createdSystem->getUserOwner() === $this) {
+                $createdSystem->setUserOwner(null);
+            }
+        }
 
         return $this;
     }

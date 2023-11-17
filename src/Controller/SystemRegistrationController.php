@@ -32,6 +32,7 @@ class SystemRegistrationController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $systems->addUser($user);
+                $systems->setUserOwner($user);
                 $this->entityManager->persist($systems);
                 $this->entityManager->flush();
 

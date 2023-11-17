@@ -31,7 +31,7 @@ final class Version20231028094349 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE type_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE device (id INT NOT NULL, type_id INT NOT NULL, description VARCHAR(255) DEFAULT NULL, user_alias VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_92FB68EC54C8C93 ON device (type_id)');
-        $this->addSql('CREATE TABLE parameters (id INT NOT NULL, type_id INT NOT NULL, name VARCHAR(255) NOT NULL, values TEXT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE parameters (id INT NOT NULL, type_id INT NOT NULL, name VARCHAR(255) NOT NULL, values JSON NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_69348FEC54C8C93 ON parameters (type_id)');
         $this->addSql('COMMENT ON COLUMN parameters.values IS \'(DC2Type:array)\'');
         $this->addSql('CREATE TABLE type (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
@@ -41,14 +41,21 @@ final class Version20231028094349 extends AbstractMigration
         //system
         $this->addSql('CREATE SEQUENCE systems_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE systems (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('ALTER TABLE device ADD systems_id INT NOT NULL');
+        $this->addSql('ALTER TABLE device ADD systems_id INT');
         $this->addSql('ALTER TABLE device ADD CONSTRAINT FK_92FB68E411D7F6D FOREIGN KEY (systems_id) REFERENCES systems (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_92FB68E411D7F6D ON device (systems_id)');
         $this->addSql('CREATE TABLE user_systems (user_id INT NOT NULL, systems_id INT NOT NULL, PRIMARY KEY(user_id, systems_id))');
         $this->addSql('CREATE INDEX IDX_39A0C6B8A76ED395 ON user_systems (user_id)');
         $this->addSql('CREATE INDEX IDX_39A0C6B8411D7F6D ON user_systems (systems_id)');
-        $this->addSql('ALTER TABLE user_systems ADD CONSTRAINT FK_39A0C6B8A76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE user_systems ADD CONSTRAINT FK_39A0C6B8411D7F6D FOREIGN KEY (systems_id) REFERENCES systems (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE user_systems ADD CONSTRAINT FK_39A0C6B8A76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id)  NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE user_systems ADD CONSTRAINT FK_39A0C6B8411D7F6D FOREIGN KEY (systems_id) REFERENCES systems (id)  NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE device DROP CONSTRAINT FK_92FB68E411D7F6D');
+        $this->addSql('ALTER TABLE device ADD CONSTRAINT FK_92FB68E411D7F6D FOREIGN KEY (systems_id) REFERENCES systems (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+
+        //system ownership
+        $this->addsql('alter table systems add user_owner_id int');
+        $this->addsql('alter table systems add constraint fk_61add8b29eb185f9 foreign key (user_owner_id) references "user" (id) not deferrable initially immediate');
+        $this->addsql('create index idx_61add8b29eb185f9 on systems (user_owner_id)');
     }
 
     public function down(Schema $schema): void
@@ -76,5 +83,9 @@ final class Version20231028094349 extends AbstractMigration
         $this->addSql('ALTER TABLE user_systems DROP CONSTRAINT FK_39A0C6B8A76ED395');
         $this->addSql('ALTER TABLE user_systems DROP CONSTRAINT FK_39A0C6B8411D7F6D');
         $this->addSql('DROP TABLE user_systems');
+        //system ownership
+        $this->addSql('ALTER TABLE systems DROP CONSTRAINT FK_61ADD8B29EB185F9');
+        $this->addSql('DROP INDEX IDX_61ADD8B29EB185F9');
+        $this->addSql('ALTER TABLE systems DROP user_owner_id');
     }
 }

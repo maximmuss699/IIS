@@ -5,7 +5,11 @@
 
 {% block body %}
     <h1>User Profile</h1>
-    <p>Username: {{ user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    {# Other user information you want to display #}
+
+    {{ form_start(form) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+
+    <button type="submit">Save Changes</button>
+    {{ form_end(form) }}
 {% endblock %}

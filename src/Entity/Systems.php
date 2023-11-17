@@ -26,6 +26,10 @@ class Systems
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Systems')]
     private Collection $users;
 
+    #[ORM\ManyToOne(inversedBy: 'CreatedSystems')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $userOwner = null;
+
     public function __construct()
     {
         $this->Devices = new ArrayCollection();
@@ -102,6 +106,18 @@ class Systems
         if ($this->users->removeElement($user)) {
             $user->removeSystem($this);
         }
+
+        return $this;
+    }
+
+    public function getUserOwner(): ?User
+    {
+        return $this->userOwner;
+    }
+
+    public function setUserOwner(?User $userOwner): static
+    {
+        $this->userOwner = $userOwner;
 
         return $this;
     }

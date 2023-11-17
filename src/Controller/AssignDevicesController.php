@@ -26,6 +26,11 @@ class AssignDevicesController extends AbstractController
 
         $deviceDetails = [];
         foreach ($devices as $device) {
+            if (!$device->getSystems() == null)
+            {
+                if ($id == $device->getSystems()->getId())
+                    continue;
+            }
 
             $userAlias = $device->getUserAlias();
             $typeName = $device->getType()->getName();
@@ -81,7 +86,7 @@ class AssignDevicesController extends AbstractController
             $this->entityManager->flush();
         }
         // Redirect or render a response if the request method is not POST
-        return $this->redirectToRoute('app_home_page_logged');
+        return $this->redirectToRoute('app_system_details', ['id' => $systemId]);
     }
 
 }

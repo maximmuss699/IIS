@@ -59,13 +59,8 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         $user = $token->getUser();
 
         // Check the user's role
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
-            // Redirect to the app_admin page
-            return new RedirectResponse($this->urlGenerator->generate('admin'));
-        } elseif (in_array('ROLE_USER', $user->getRoles())) {
-            // Redirect to the app_instructeur page
-            return new RedirectResponse($this->urlGenerator->generate('app_home_page_logged'));
-        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_home_page_logged'));
         //TODO PROPER handle
         throwException("idk");
     }
