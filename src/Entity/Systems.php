@@ -23,9 +23,13 @@ class Systems
     #[ORM\OneToMany(mappedBy: 'systems', targetEntity: Device::class, orphanRemoval: true)]
     private Collection $Devices;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Systems')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->Devices = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,6 +74,33 @@ class Systems
             if ($device->getSystems() === $this) {
                 $device->setSystems(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addSystem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeSystem($this);
         }
 
         return $this;

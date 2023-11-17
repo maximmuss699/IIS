@@ -12,17 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 class AssignDevicesController extends AbstractController
 {
     private $entityManager;
-    public $systemID;
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/assignDevices{id}', name: 'app_assign_devices')]
+    #[Route('/assign_devices{id}', name: 'app_assign_devices')]
     public function index($id): Response
     {
 
-       $deviceRepository = $this->entityManager->getRepository(Device::class);
+        $deviceRepository = $this->entityManager->getRepository(Device::class);
         $devices = $deviceRepository->findAll();
 
         $deviceDetails = [];
@@ -80,14 +79,9 @@ class AssignDevicesController extends AbstractController
                   $this->entityManager->persist($device);
              }
             $this->entityManager->flush();
-            // Handle the selected device IDs (assign to the system, perform operations, etc.)
-            // Example: Fetch devices by IDs and assign them to a system
-
-            // Redirect or render a response
         }
-        dump('This code was executed2.');
         // Redirect or render a response if the request method is not POST
-        return $this->redirectToRoute('app_home_page');
+        return $this->redirectToRoute('app_home_page_logged');
     }
 
 }

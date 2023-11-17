@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\System;
 use App\Form\SystemType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 class SystemRegistrationController extends AbstractController
 {
     private $entityManager;
@@ -22,24 +23,31 @@ class SystemRegistrationController extends AbstractController
 
 
     #[Route('/system_registration', name: 'app_system_registration')]
-    public function new(Request $request): Response
+    public function new(Request $request, Security $security): Response
     {
         $systems = new Systems();
-        $form = $this->createForm(SystemRegistrationType::class, $systems);
+        $user = $security->getUser();
+        if ($user !== null) {
+            $form = $this->createForm(SystemRegistrationType::class, $systems);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $systems->addUser($user);
+                $this->entityManager->persist($systems);
+                $this->entityManager->flush();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+                return $this->redirectToRoute('app_home_page_logged'); // Redirect to a success page
+            }
 
-            $this->entityManager->persist($systems);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('app_home_page_logged'); // Redirect to a success page
+            return $this->render('system_registration/index.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        } else {
+            // Handle the case when the user is not authenticated
+            // For example, redirect to the login page or display an error message
+            return $this->redirectToRoute('app_home_page'); // Replace with your login route
         }
-
-        return $this->render('system_registration/index.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
+
 
 }
 

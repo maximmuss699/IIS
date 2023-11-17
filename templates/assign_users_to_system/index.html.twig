@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AssignUsersToSystemController!{% endblock %}
+
+{% block body %}
+<form action="{{ path('handle_user_assignment', {'id': systemId}) }}" method="post">
+        {% for user in users %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <label>
+                            <input type="checkbox" name="selected_users[]" value="{{ user.id }}">
+                        </label>
+                        <h5 class="card-title">Device ID: {{ user.email }}</h5>
+                        <ul class="list-group list-group-flush">
+                            {% for role in user.roles %}
+                                <li>{{ role }}</li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <input type="hidden" name="system_id" value="{{ systemId }}">
+        <button type="submit">Assign to System</button>
+    </form>
+{% endblock %}
