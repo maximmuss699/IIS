@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AssignKPIController!{% endblock %}
+
+{% block body %}
+    <h1>Create a KPI</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.value) }}
+    {{ form_row(form.function) }}
+    {{ form_row(form.parameter) }}
+    <button type="submit">Save</button>
+    {{ form_end(form) }}
+{% endblock %}

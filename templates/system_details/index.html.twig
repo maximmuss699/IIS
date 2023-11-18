@@ -77,11 +77,15 @@
                     <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
                     <button type="submit">Delete</button> <!-- Delete button -->
                 </form>
+                <li><a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}">Create KPI</a></li>
             </div>
         {% endfor %}
         {% if user is defined and user == systemOwner %}
             <li><a href="{{ path('app_assign_devices', {'id': systemId}) }}">Assign Device</a></li>
             <li><a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}">Assign to users</a></li>
         {% endif %}
+        {% for kpi in kpis %}
+            <p class="card-text">User Alias: {{ kpi.value}}</p>
+        {% endfor %}
     </div>
 {% endblock %}

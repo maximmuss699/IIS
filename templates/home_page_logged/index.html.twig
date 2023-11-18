@@ -44,17 +44,23 @@
 <h1>Systems</h1>
 
     <div class="row">
-        {% for system in systems %}
+        {% for pair in systemKpiPairs %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ path('delete_system', {'id': system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ system.id) }}">
-                            <button type="submit">Delete</button> <!-- Delete button -->
-                        </form>
-                        <li><a href="{{ path('app_system_details', {'id': system.id}) }}">View Details</a></li>
-
+                        <h3>System: {{ pair.system.name }}</h3>
+                        <ul>
+                            {% for kpiValue in pair.kpi %}
+                                <li>KPI Value: {{ kpiValue }}</li>
+                                {# Display other KPI-related information within the same card as the system #}
+                            {% endfor %}
+                            <form action="{{ path('delete_system', {'id': pair.system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pair.system.id) }}">
+                                <button type="submit">Delete</button> <!-- Delete button -->
+                            </form>
+                            <li><a href="{{ path('app_system_details', {'id': pair.system.id}) }}">View Details</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

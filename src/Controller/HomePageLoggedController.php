@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\Device;
+use App\Entity\KPI;
 use App\Entity\Systems;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,22 +25,38 @@ class HomePageLoggedController extends AbstractController
     {
         $systemRepository = $this->entityManager->getRepository(Systems::class);
         $systems = $systemRepository->findAll();
-
+        $kpiRepository = $this->entityManager->getRepository(KPI::class);
+        $kpis = $kpiRepository->findAll();
         $loggedUser = $security->getUser();
 
-        $userSystems = [];
-        foreach ($systems as $system)
-        {
-            foreach ($system->getUsers() as $user)
-            {
-                if ($user == $loggedUser)
-                    $userSystems[] = $system;
+
+
+        $systemKpiPairs = [];
+
+        foreach ($systems as $system) {
+            $resultF = "true";
+            foreach ($system->getUsers() as $user) {
+                if ($user == $loggedUser) {
+                    $matchedKPIs = [];
+                    foreach ($kpis as $kpi) {
+                        if ($kpi->getSystems() === $system) {
+                            // Process or perform actions on the matched KPIs
+                            if (!$this->calKPI($kpi))
+                                $resultF = "false";
+                        }
+                    }
+                    $matchedKPIs[] = $resultF;
+                    $systemKpiPairs[] = [
+                        'system' => $system,
+                        'kpi' => $matchedKPIs,
+                    ];
+                    break; // Break the loop once the user is found in the system
+                }
             }
         }
 
-
         return $this->render('home_page_logged/index.html.twig', [
-            'systems' => $userSystems,
+            'systemKpiPairs' => $systemKpiPairs,
         ]);
     }
 
@@ -66,5 +83,37 @@ class HomePageLoggedController extends AbstractController
         $entityManager->flush();
         // Redirect to the forum page or wherever you want after deletion
         return $this->redirectToRoute('app_home_page_logged');
+    }
+
+
+    public function calKPI ($kpi): bool
+    {
+        $values = $kpi->getParameter()->getValues();
+        $parVal = null; // Default value if the array is empty
+        if (!empty($values)) {
+            $lastValueIndex = count($values) - 1;
+            $parVal = $values[$lastValueIndex];
+            // Or simply: $parVal = end($values);
+        }
+       switch ($kpi->getFunction())
+       {
+           case "gt":
+               if ($kpi->getValue() > $parVal)
+                   return true;
+               break;
+           case "lt":
+               if ($kpi->getValue() < $parVal)
+                   return true;
+               break;
+           case "eq":
+               if ($kpi->getValue() == $parVal)
+                   return true;
+               break;
+           case "neq":
+               if ($kpi->getValue() != $parVal)
+                   return true;
+               break;
+       }
+       return false;
     }
 }

@@ -24,6 +24,9 @@ class Parameters
     #[ORM\JoinColumn(nullable: false)]
     private ?Type $type = null;
 
+    #[ORM\OneToOne(mappedBy: 'parameter', cascade: ['persist', 'remove'])]
+    private ?KPI $kPI = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,28 @@ class Parameters
     public function setType(?Type $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getKPI(): ?KPI
+    {
+        return $this->kPI;
+    }
+
+    public function setKPI(?KPI $kPI): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($kPI === null && $this->kPI !== null) {
+            $this->kPI->setParameter(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($kPI !== null && $kPI->getParameter() !== $this) {
+            $kPI->setParameter($this);
+        }
+
+        $this->kPI = $kPI;
 
         return $this;
     }

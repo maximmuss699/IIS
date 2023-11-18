@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Device;
+use App\Entity\KPI;
 use App\Entity\Systems;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,8 @@ class SystemDetailsController extends AbstractController
         $systemR = $this->entityManager->getRepository(Systems::class);
         $system = $systemR->find($id);
         $user = $this->getUser();
+        $kpiR = $this->entityManager->getRepository(KPI::class);
+        $kpis = $kpiR->findAll();
         $deviceDetails = [];
         foreach ($devices as $device) {
             if ($device->getSystems() == null)
@@ -45,12 +48,20 @@ class SystemDetailsController extends AbstractController
                 'parameters' => $parameters,
             ];
         }
+        $systemKPIs = [];
+
+        foreach ($kpis as $kpi) {
+            if ($kpi->getSystems()->getId() == $id) {
+                $systemKPIs[] = $kpi; // Collecting all KPIs related to the specified system ID
+            }
+        }
 
         return $this->render('system_details/index.html.twig', [
             'deviceDetails' => $deviceDetails,
             'systemId' => $id,
             'systemOwner' => $system->getUserOwner(),
             'user' => $user,
+            'kpis' => $systemKPIs,
         ]);
     }
     #[Route('/disconnect/{id}', name: 'disconnect_device')]

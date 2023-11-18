@@ -30,10 +30,14 @@ class Systems
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userOwner = null;
 
+    #[ORM\OneToMany(mappedBy: 'systems', targetEntity: KPI::class)]
+    private Collection $KPI;
+
     public function __construct()
     {
         $this->Devices = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->KPI = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,6 +122,36 @@ class Systems
     public function setUserOwner(?User $userOwner): static
     {
         $this->userOwner = $userOwner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, KPI>
+     */
+    public function getKPI(): Collection
+    {
+        return $this->KPI;
+    }
+
+    public function addKPI(KPI $kPI): static
+    {
+        if (!$this->KPI->contains($kPI)) {
+            $this->KPI->add($kPI);
+            $kPI->setSystems($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKPI(KPI $kPI): static
+    {
+        if ($this->KPI->removeElement($kPI)) {
+            // set the owning side to null (unless already changed)
+            if ($kPI->getSystems() === $this) {
+                $kPI->setSystems(null);
+            }
+        }
 
         return $this;
     }
