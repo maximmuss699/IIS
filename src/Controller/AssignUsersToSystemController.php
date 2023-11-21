@@ -20,48 +20,50 @@ class AssignUsersToSystemController extends AbstractController
     {
         $userRepository = $this->entityManager->getRepository(User::class);
         $users = $userRepository->findAll();
+        $finalUsers = [];
+        foreach ($users as $user)
+        {
+            $userSystems = $user->getSystems();
+            foreach ($userSystems as $system)
+            {
+                if ($system->getId() == $id)
+                {
+                    $finalUsers[] = $user;
+                }
+
+            }
+        }
 
        return $this->render('assign_users_to_system/index.html.twig', [
-            'users' => $users,
+            'users' => $finalUsers,
             'systemId' => $id,
         ]);
     }
     #[Route('/assign/users/system', name: 'handle_user_assignment', methods: ['POST'])]
     public function handleUserAssignment (Request $request): Response
     {
-        if ($request->isMethod('POST')) {
-            $formData = $request->request->all();
+        $email = $request->request->get('email');
+        $systemId = $request->request->get('systemId'); // Make sure the key matches the AJAX payload
 
-            // Initialize an empty array for selected device IDs
-            $selectedUserIds = [];
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $systemRepository = $this->entityManager->getRepository(Systems::class);
 
-            // Check if 'selected_devices' key exists in the form data
-            if (isset($formData['selected_users']) && is_array($formData['selected_users'])) {
-                foreach ($formData['selected_users'] as $userId) {
-                    // Check if the value is a valid integer (or adjust validation as needed)
-                    if (is_numeric($userId)) {
-                        $selectedUserIds[] = (int) $userId; // Convert to integer and add to the array
-                    }
-                }
-            }
+        $system = $systemRepository->find($systemId);
+        $user = $userRepository->findOneBy(['email' => $email]);
 
-            $systemId = $request->request->get('system_id');
-            $system = $this->entityManager->getRepository(Systems::class)->find($systemId);
-            $users = $this->entityManager
-                ->getRepository(User::class)
-                ->createQueryBuilder('u')
-                ->where('u.id IN (:selectedIds)')
-                ->setParameter('selectedIds', $selectedUserIds)
-                ->getQuery()
-                ->getResult();
-            foreach ($users as $user) {
+        if ($user) {
+            if ($system && !$user->getSystems()->contains($system)) {
                 $system->addUser($user);
                 $this->entityManager->persist($system);
                 $this->entityManager->flush();
+                return new Response('success');
+            } else {
+                return new Response('User already added.' );
             }
         }
-        // Redirect or render a response if the request method is not POST
-        return $this->redirectToRoute('app_home_page_logged');
+        else {
+            return new Response('User does not exist.', 404);
+        }
     }
 
 }
