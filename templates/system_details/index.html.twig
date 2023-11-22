@@ -1,9 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello HomePageLoggedController!{% endblock %}
-
 {% block body %}
     <style>
+        table {
+            border-collapse: collapse;
+            width: 100%; /* Set table width to 100% of the parent container */
+            max-width: 60%; /* Limit the maximum width to 60% of the screen */
+            margin: 0 auto; /* Center the table horizontally */
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
         .user-grid {
@@ -53,8 +66,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Device ID: {{ deviceDetail.device.id }}</h5>
-                        <p class="card-text">User Alias: {{ deviceDetail.userAlias }}</p>
+                        <p class="card-title">User Alias: {{ deviceDetail.userAlias }}</p>
                         <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
                         <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
                         <ul class="list-group list-group-flush">
@@ -83,9 +95,25 @@
         {% if user is defined and user == systemOwner %}
             <li><a href="{{ path('app_assign_devices', {'id': systemId}) }}">Assign Device</a></li>
             <li><a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}">Assign to users</a></li>
+
+            </div>
         {% endif %}
-        {% for kpi in kpis %}
-            <p class="card-text">User Alias: {{ kpi.value}}</p>
-        {% endfor %}
-    </div>
+        <table>
+            <tr>
+                <th>Parameter Name</th>
+                <th>Parameter Value</th>
+                <th>Function</th>
+                <th>KPI Value</th>
+                <th>Result</th>
+            </tr>
+            {% for kpi in kpis %}
+                <tr>
+                    <td>{{ kpi.paramName }}</td>
+                    <td>{{ kpi.paramVal }}</td>
+                    <td>{{ kpi.function }}</td>
+                    <td>{{ kpi.value }}</td>
+                    <td>{{ kpi.result }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 {% endblock %}

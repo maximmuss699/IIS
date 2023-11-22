@@ -30,25 +30,22 @@ class HomePageLoggedController extends AbstractController
         $loggedUser = $security->getUser();
 
 
-
         $systemKpiPairs = [];
 
         foreach ($systems as $system) {
-            $resultF = "true";
+            $devices = $this->entityManager->getRepository(Device::class)->findBy(['systems' => $system->getId()]);
+            $resultF = "";
             foreach ($system->getUsers() as $user) {
                 if ($user == $loggedUser) {
-                    $matchedKPIs = [];
                     foreach ($kpis as $kpi) {
                         if ($kpi->getSystems() === $system) {
-                            // Process or perform actions on the matched KPIs
-                            if (!$this->calKPI($kpi))
-                                $resultF = "false";
+                            $resultF = $this->calKPI($kpi) ? 'true' : 'false';
                         }
                     }
-                    $matchedKPIs[] = $resultF;
                     $systemKpiPairs[] = [
                         'system' => $system,
-                        'kpi' => $matchedKPIs,
+                        'kpi' => $resultF,
+                        'numOfDev' => count($devices),
                     ];
                     break; // Break the loop once the user is found in the system
                 }
@@ -86,7 +83,7 @@ class HomePageLoggedController extends AbstractController
     }
 
 
-    public function calKPI ($kpi): bool
+    public function calKPI ($kpi): string
     {
         $values = $kpi->getParameter()->getValues();
         $parVal = null; // Default value if the array is empty
@@ -98,11 +95,11 @@ class HomePageLoggedController extends AbstractController
        switch ($kpi->getFunction())
        {
            case "gt":
-               if ($kpi->getValue() > $parVal)
+               if ($kpi->getValue() < $parVal)
                    return true;
                break;
            case "lt":
-               if ($kpi->getValue() < $parVal)
+               if ($kpi->getValue() > $parVal)
                    return true;
                break;
            case "eq":

@@ -25,6 +25,7 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
                 <li><a href="/user/profile" class="nav-link px-2 text-secondary">UserProfile</a></li>
+                <li><a href="/brooker" class="nav-link px-2 text-secondary">Brooker</a></li>
             </ul>
 
 
@@ -49,17 +50,22 @@
                 <div class="card">
                     <div class="card-body">
                         <h3>System: {{ pair.system.name }}</h3>
+                        <h4>Num of devices: {{ pair.numOfDev}}</h4>
                         <ul>
-                            {% for kpiValue in pair.kpi %}
-                                <li>KPI Value: {{ kpiValue }}</li>
-                                {# Display other KPI-related information within the same card as the system #}
-                            {% endfor %}
+
+                            {% if pair.kpi == 'true' %}
+                                <i class="fas fa-check-circle">KPI STATUS</i> <!-- Font Awesome check circle icon -->
+                            {% elseif pair.kpi == 'false' %}
+                                <i class="fas fa-times-circle">KPI STATUS</i> <!-- Font Awesome times circle icon -->
+                            {% else %}
+                                <i class="fas fa-question-circle">KPI STATUS</i> <!-- Font Awesome question circle icon -->
+                            {% endif %}
+                            <li><a href="{{ path('app_system_details', {'id': pair.system.id}) }}">View Details</a></li>
                             <form action="{{ path('delete_system', {'id': pair.system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pair.system.id) }}">
                                 <button type="submit">Delete</button> <!-- Delete button -->
                             </form>
-                            <li><a href="{{ path('app_system_details', {'id': pair.system.id}) }}">View Details</a></li>
                         </ul>
                     </div>
                 </div>
