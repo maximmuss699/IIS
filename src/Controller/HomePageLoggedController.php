@@ -54,6 +54,7 @@ class HomePageLoggedController extends AbstractController
 
         return $this->render('home_page_logged/index.html.twig', [
             'systemKpiPairs' => $systemKpiPairs,
+            'role' => $loggedUser->getRoles(),
         ]);
     }
 

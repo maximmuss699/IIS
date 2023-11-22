@@ -38,6 +38,7 @@ class UserProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'active_user' => null, // Set default value for active_user option
         ]);
     }
 }

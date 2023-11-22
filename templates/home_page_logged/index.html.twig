@@ -24,8 +24,16 @@
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a href="/user/profile" class="nav-link px-2 text-secondary">UserProfile</a></li>
-                <li><a href="/brooker" class="nav-link px-2 text-secondary">Brooker</a></li>
+                {% for rl in role %}
+                {% if rl == 'ROLE_ADMIN' %}
+                    <li><a href="/user/profile" class="nav-link px-2 text-secondary">AdminDashboard</a></li>
+                {% elseif rl == 'ROLE_USER' %}
+                    <li><a href="/user/profile" class="nav-link px-2 text-secondary">UserProfile</a></li>
+                {% endif %}
+                {% if rl == 'ROLE_BROOKER' or rl == 'ROLE_ADMIN' %}
+                    <li><a href="/brooker" class="nav-link px-2 text-secondary">Brooker</a></li>
+                {% endif %}
+                {% endfor %}
             </ul>
 
 

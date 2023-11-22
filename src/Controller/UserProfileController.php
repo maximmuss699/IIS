@@ -34,11 +34,18 @@ class UserProfileController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
 
-        $form = $this->createForm(UserProfileType::class, $user);
-
+        $form = $this->createForm(UserProfileType::class, null, [
+            'active_user' => $user,]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            // Access individual form fields
+            $email = $formData->getEmail();
+            $password = $formData->getPassword();
+            $user->setEmail($email);
+            $user->setPassword($password);
             $entityManager = $this->entityManager;
             $entityManager->persist($user);
             $entityManager->flush();

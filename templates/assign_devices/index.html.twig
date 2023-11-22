@@ -3,33 +3,58 @@
 {% block title %}Hello AssignDevicesController!{% endblock %}
 
 {% block body %}
-    <form action="{{ path('handle_device_assignment', {'id': systemId}) }}" method="post">
-        {% for deviceDetail in deviceDetails %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <label>
-                            <input type="checkbox" name="selected_devices[]" value="{{ deviceDetail.device.id }}">
-                        </label>
-                        <h5 class="card-title">Device ID: {{ deviceDetail.device.id }}</h5>
-                        <p class="card-text">User Alias: {{ deviceDetail.userAlias }}</p>
-                        <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
-                        <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
-                        <ul class="list-group list-group-flush">
-                            {% for parameter in deviceDetail.parameters %}
-                                <li>{{ parameter.name }}</li>
-                                <ul>
-                                    {% for value in parameter.values %}
-                                        <li>{{ value }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {{ deviceDetail.userAlias }}
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
+            </ul>
+
+
+
+            <div class="text-end">
+                <button onclick="location.href = '/logout';" type="button" class="btn btn-outline-light me-2">Sign Out</button>
             </div>
-        {% endfor %}
+        </div>
+    </div>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <form action="{{ path('handle_device_assignment', {'id': systemId}) }}" method="post">
+        {% if deviceDetails is empty %}
+        <p>No devices found.</p>
+        {% else %}
+            {% for deviceDetail in deviceDetails %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <label>
+                                <input type="checkbox" name="selected_devices[]" value="{{ deviceDetail.device.id }}">
+                            </label>
+                            <h5 class="card-title">Device ID: {{ deviceDetail.device.id }}</h5>
+                            <p class="card-text">User Alias: {{ deviceDetail.userAlias }}</p>
+                            <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
+                            <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
+                            <ul class="list-group list-group-flush">
+                                {% for parameter in deviceDetail.parameters %}
+                                    <li>{{ parameter.name }}</li>
+                                    <ul>
+                                        {% for value in parameter.values %}
+                                            <li>{{ value }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {{ deviceDetail.userAlias }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <input type="hidden" name="system_id" value="{{ systemId }}">
         <button type="submit">Assign to System</button>
     </form>

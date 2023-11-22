@@ -29,7 +29,9 @@ class SystemDetailsController extends AbstractController
         $user = $this->getUser();
         $kpiR = $this->entityManager->getRepository(KPI::class);
         $kpis = $kpiR->findAll();
+
         $deviceDetails = [];
+        $systemKPIs = [];
         foreach ($devices as $device) {
             if ($device->getSystems() == null)
                 continue;
@@ -51,7 +53,6 @@ class SystemDetailsController extends AbstractController
                 'parameters' => $parameters,
             ];
         }
-        $systemKPIs = [];
 
         foreach ($kpis as $kpi) {
             if ($kpi->getSystems()->getId() == $id) {

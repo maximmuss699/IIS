@@ -60,7 +60,6 @@ class BrookerController extends AbstractController
         // Retrieve the device entity based on the deviceId
         $deviceR = $entityManager->getRepository(Device::class);
         $parameters = $entityManager->getRepository(Parameters::class)->findAll();
-        dump($deviceId);
         $device = $deviceR->find($deviceId);
 
         if (!$device) {
