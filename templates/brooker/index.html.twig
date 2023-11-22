@@ -19,6 +19,10 @@
                                             <input type="text" class="form-control" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}">
                                         </div>
                                     {% endfor %}
+                                    <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
+                                        Wrong input, numbers only.
+                                    </div>
+
                                     <button type="submit" class="btn btn-primary">Update Parameters</button>
                                 </form>
                         </ul>
@@ -39,11 +43,17 @@
                     type: 'POST',
                     url: '{{ path('app_brooker_update') }}',
                     data: {form: formData, id: deviceId},
-                    success: function(response) {
+                    success: function(response, textStatus, xhr) {
                         alert('Parameters updated successfully!');
+                        location.reload();
                         // Optionally update the UI to reflect changes
                     },
-                    error: function(response) {
+                    error: function(xhr) {
+                        if (xhr.status === 403) {
+                            var deviceId = xhr.responseText;
+                            // Show user not found error message
+                            $('#' + deviceId).show();
+                        }
                     }
                 });
             });

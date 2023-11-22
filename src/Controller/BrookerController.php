@@ -79,10 +79,20 @@ class BrookerController extends AbstractController
                 if (strpos($val, ','))
                 {
                     $valArray = explode(',', $val);
+                    foreach ($valArray as $valueOfArray)
+                    {
+                        if (!is_numeric($valueOfArray))
+                            return new Response($deviceId, Response::HTTP_FORBIDDEN);
+
+                    }
                     $parameter->setValues($valArray);
                 }
                 else
+                {
+                    if (!is_numeric($val))
+                        return new Response('Provided wrong value.', Response::HTTP_FORBIDDEN);
                     $parameter->setValues((array)$val);
+                }
                 $entityManager->persist($parameter);
             }
 
@@ -91,8 +101,9 @@ class BrookerController extends AbstractController
         // Persist changes to the database
         $entityManager->flush();
 
-        return new Response('Parameters updated successfully ');
-    // Update only the parameters that were changed in the request
+        $response = new Response('Success');
+        $response->headers->set('X-Device-ID', $deviceId);
+        return $response;    // Update only the parameters that were changed in the request
 
 }
 
