@@ -31,9 +31,8 @@ class HomePageLoggedController extends AbstractController
 
 
         $systemKpiPairs = [];
-
+        $devices = [];
         foreach ($systems as $system) {
-            $devices = $this->entityManager->getRepository(Device::class)->findBy(['systems' => $system->getId()]);
             $resultF = "";
             foreach ($system->getUsers() as $user) {
                 if ($user == $loggedUser) {
@@ -45,7 +44,7 @@ class HomePageLoggedController extends AbstractController
                     $systemKpiPairs[] = [
                         'system' => $system,
                         'kpi' => $resultF,
-                        'numOfDev' => count($devices),
+                        "Devices" =>   $this->entityManager->getRepository(Device::class)->findBy(['systems' => $system->getId()]),
                     ];
                     break; // Break the loop once the user is found in the system
                 }
