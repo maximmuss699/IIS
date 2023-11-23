@@ -29,7 +29,9 @@ class SystemDetailsController extends AbstractController
         $user = $this->getUser();
         $kpiR = $this->entityManager->getRepository(KPI::class);
         $kpis = $kpiR->findAll();
+
         $deviceDetails = [];
+        $systemKPIs = [];
         foreach ($devices as $device) {
             if ($device->getSystems() == null)
                 continue;
@@ -38,7 +40,10 @@ class SystemDetailsController extends AbstractController
 
             $userAlias = $device->getUserAlias();
             $typeName = $device->getType()->getName();
-            $parameters = $device->getType()->getParameters();
+            $parameters = $device->getType()->getParameters()->toArray();
+            usort($parameters, function($a, $b) {
+                return $a->getId() - $b->getId();
+            });
 
             // Gather device details in an array
             $deviceDetails[] = [
@@ -48,11 +53,18 @@ class SystemDetailsController extends AbstractController
                 'parameters' => $parameters,
             ];
         }
-        $systemKPIs = [];
 
         foreach ($kpis as $kpi) {
             if ($kpi->getSystems()->getId() == $id) {
-                $systemKPIs[] = $kpi; // Collecting all KPIs related to the specified system ID
+                $array = $kpi->getParameter()->getValues();
+                $kpiF = $kpi->getFunction();
+                $systemKPIs[] = [
+                    'function' => $this->getFunction($kpiF),
+                    'value'=> $kpi->getValue(),
+                    'paramName' => $kpi->getParameter()->getName(),
+                    'paramVal' => end($array),
+                    'result' => $this->callKpi($kpiF, end($array), $kpi->getValue())
+                ];
             }
         }
 
@@ -63,6 +75,42 @@ class SystemDetailsController extends AbstractController
             'user' => $user,
             'kpis' => $systemKPIs,
         ]);
+    }
+    public function callKpi($kpiF, $parVal, $kpiVal):string
+    {
+        switch ($kpiF)
+        {
+            case "gt":
+                if ($kpiVal < $parVal)
+                    return "true";
+                break;
+            case "lt":
+                if ($kpiVal > $parVal)
+                    return "true";
+                break;
+            case "eq":
+                if ($kpiVal == $parVal)
+                    return "true";
+                break;
+            case "neq":
+                if ($kpiVal != $parVal)
+                    return "true";
+                break;
+            default:
+                return (string) $kpiF;
+        }
+        return "false";
+    }
+    public function getFunction($kip): string
+    {
+        return match ($kip) {
+            "lt" => "less then",
+            "gt" => "more then",
+            "eq" => "equal to",
+            "neq" => "not equal to",
+            default => "error function not found",
+        };
+
     }
     #[Route('/disconnect/{id}', name: 'disconnect_device')]
     public function disconnectDevice(Request $request, int $id): Response

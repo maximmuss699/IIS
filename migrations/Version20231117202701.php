@@ -22,7 +22,7 @@ final class Version20231117202701 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SEQUENCE kpi_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE kpi (id INT NOT NULL, parameter_id INT DEFAULT NULL, systems_id INT DEFAULT NULL, value INT DEFAULT NULL, function VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_A0925DD97C56DBD6 ON kpi (parameter_id)');
+        $this->addSql('CREATE INDEX UNIQ_A0925DD97C56DBD6 ON kpi (parameter_id)');
         $this->addSql('CREATE INDEX IDX_A0925DD9411D7F6D ON kpi (systems_id)');
         $this->addSql('ALTER TABLE kpi ADD CONSTRAINT FK_A0925DD97C56DBD6 FOREIGN KEY (parameter_id) REFERENCES parameters (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE kpi ADD CONSTRAINT FK_A0925DD9411D7F6D FOREIGN KEY (systems_id) REFERENCES systems (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
