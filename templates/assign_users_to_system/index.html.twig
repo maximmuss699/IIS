@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AssignUsersToSystemController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
+            </ul>
+
+
+
+            <div class="text-end">
+                <button onclick="location.href = '/logout';" type="button" class="btn btn-outline-light me-2">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <form action="{{ path('handle_user_assignment', {'id': systemId}) }}" method="post">
+        {% for user in users %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">User email: {{ user.email }}</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for role in user.roles %}
+                                    <li>{{ role }}</li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+        {% endfor %}
+        <div id="user-not-found" style="color: red; display: none;">
+            User does not exist. Please register first.
+        </div>
+        <div id="user-already-added" style="color: red; display: none;">
+            User is already in the system.
+        </div>
+        <input type="email" name="email" id="email" placeholder="Enter email address" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                var email = $('#email').val();
+                var systemId = '{{ systemId }}'; // Assign systemId from Twig variable
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('handle_user_assignment') }}',
+                    data: { email: email, systemId: systemId },
+                    success: function(response) {
+                        if (response === 'success') {
+                            // Show success message
+                            alert('User added successfully!');
+                            // Refresh the page after successful addition
+                            location.reload();
+                        } else if (response === 'User already added.') {
+                            // Show user already added error message
+                            $('#user-already-added').show();
+                            $('#user-not-found').hide();
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 404) {
+                            // Show user not found error message
+                            $('#user-not-found').show();
+                            $('#user-already-added').hide();
+                        } else {
+                            // Show error message for any other failures
+                            alert('An error occurred. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

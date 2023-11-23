@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -29,6 +31,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\ManyToMany(targetEntity: Systems::class, inversedBy: 'users')]
+    private Collection $Systems;
+
+    #[ORM\OneToMany(mappedBy: 'userOwner', targetEntity: Systems::class, orphanRemoval: true)]
+    private Collection $CreatedSystems;
+
+    public function __construct()
+    {
+        $this->Systems = new ArrayCollection();
+        $this->CreatedSystems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +112,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Systems>
+     */
+    public function getSystems(): Collection
+    {
+        return $this->Systems;
+    }
+
+    public function addSystem(Systems $system): static
+    {
+        if (!$this->Systems->contains($system)) {
+            $this->Systems->add($system);
+        }
+
+        return $this;
+    }
+
+    public function removeSystem(Systems $system): static
+    {
+        $this->Systems->removeElement($system);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Systems>
+     */
+    public function getCreatedSystems(): Collection
+    {
+        return $this->CreatedSystems;
+    }
+
+    public function addCreatedSystem(Systems $createdSystem): static
+    {
+        if (!$this->CreatedSystems->contains($createdSystem)) {
+            $this->CreatedSystems->add($createdSystem);
+            $createdSystem->setUserOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedSystem(Systems $createdSystem): static
+    {
+        if ($this->CreatedSystems->removeElement($createdSystem)) {
+            // set the owning side to null (unless already changed)
+            if ($createdSystem->getUserOwner() === $this) {
+                $createdSystem->setUserOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

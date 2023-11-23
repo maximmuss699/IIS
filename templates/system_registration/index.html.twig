@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SystemRegistrationController!{% endblock %}
+
+{% block body %}
+    <h1>Create a New System</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+
+    {# Add other fields as needed #}
+
+    <button type="submit">Create</button>
+    {{ form_end(form) }}
+{% endblock %}

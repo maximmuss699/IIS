@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BrookerController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
+            </ul>
+
+
+
+            <div class="text-end">
+                <button onclick="location.href = '/logout';" type="button" class="btn btn-outline-light me-2">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+     {% for deviceDetail in deviceDetails %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card" data-device-id="{{ deviceDetail.device.id }}">
+                        <p class="card-title">User Alias: {{ deviceDetail.userAlias }}</p>
+                        <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
+                        <ul class="list-group list-group-flush">
+                                <form class="parameter-form">
+                                    <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
+                                    {% for parameter in deviceDetail.parameters %}
+                                        <div class="form-group">
+                                            <label for="{{ parameter.name }}">{{ parameter.name }}</label>
+                                            <input type="text" class="form-control" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}">
+                                        </div>
+                                    {% endfor %}
+                                    <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
+                                        Wrong input, numbers only.
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Update Parameters</button>
+                                </form>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+   {% endfor %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.parameter-form').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $(this).serializeArray();
+                var deviceId = $(this).closest('.card').data('device-id');
+                // Append deviceId to formData
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('app_brooker_update') }}',
+                    data: {form: formData, id: deviceId},
+                    success: function(response, textStatus, xhr) {
+                        alert('Parameters updated successfully!');
+                        location.reload();
+                        // Optionally update the UI to reflect changes
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 403) {
+                            var deviceId = xhr.responseText;
+                            // Show user not found error message
+                            $('#' + deviceId).show();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
