@@ -4,81 +4,181 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    .user-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust the column width as needed */
-        gap: 20px; /* Gap between user cards */
+    .widget-49-wrapper {
+        display: flex;
+        /* Other styles for the wrapper */
+    }
+    .widget-49-date-primary {
+        /* Add styles to the parent div */
+        display: flex; /* Use flexbox for alignment */
+        align-items: center; /* Align items vertically */
+        justify-content: center; /* Center content horizontally */
+        /* You can add more styles here as needed */
+    }
+    .widget-49-title-wrapper {
+        margin-right: 20px; /* Adjust the right margin to add space */
+        margin-bottom: 25px;
+        /* Other styles for the title wrapper */
     }
 
-    .user-card {
-        border: 1px solid #ccc;
-        padding: 10px;
-        /* Additional styles for the user card */
+    .widget-devices {
+        margin-left: 80px; /* Adjust the left margin to add space */
+        /* Other styles for the devices container */
     }
+    .widget-49-date-primary i {
+        /* Add styles to the icons */
+        font-size: 50px; /* Adjust the icon size */
+        /* You can add more styles here as needed */
+    }
+
+    .widget-49-points {
+        display: flex;
+        margin-left: -25px;
+        flex-direction: row; /* Arrange items horizontally */
+        /* Other styles for the ol container */
+    }
+
+    .widget-49-Det::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .widget-49-Details {
+        margin-left: 55px; /* Adjust margin for spacing */
+        /* Other styles for the details div */
+    }
+
 </style>
-
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
-                {% for rl in role %}
-                {% if rl == 'ROLE_ADMIN' %}
-                    <li><a href="/user/profile" class="nav-link px-2 text-secondary">AdminDashboard</a></li>
-                {% elseif rl == 'ROLE_USER' %}
-                    <li><a href="/user/profile" class="nav-link px-2 text-secondary">UserProfile</a></li>
-                {% endif %}
-                {% if rl == 'ROLE_BROOKER' or rl == 'ROLE_ADMIN' %}
-                    <li><a href="/brooker" class="nav-link px-2 text-secondary">Brooker</a></li>
-                {% endif %}
-                {% endfor %}
-            </ul>
-
-
-            <div class="text-end">
-                <button onclick="location.href = '/logout';" type="button" class="btn btn-outline-light me-2">Sign Out</button>
-            </div>
-        </div>
-    </div>
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
+    <div class="dash">
+        <div class="dash-nav dash-nav-dark">
+            <header>
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                    <a href="index.html" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
+                </a>
 
 
 
+            </header>
+            <nav class="dash-nav-list">
+                <a href="/homepage/Logged" class="dash-nav-item">
+                    <i class="fas fa-home"></i> Dashboard </a>
 
-<h1>Systems</h1>
+                <a href="/user/profile" class="dash-nav-item">
+                    <i class="fa fa-user-circle"></i> User </a>
 
-    <div class="row">
-        {% for pair in systemKpiPairs %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>System: {{ pair.system.name }}</h3>
-                        <h4>Num of devices: {{ pair.numOfDev}}</h4>
-                        <ul>
 
-                            {% if pair.kpi == 'true' %}
-                                <i class="fas fa-check-circle">KPI STATUS</i> <!-- Font Awesome check circle icon -->
-                            {% elseif pair.kpi == 'false' %}
-                                <i class="fas fa-times-circle">KPI STATUS</i> <!-- Font Awesome times circle icon -->
-                            {% else %}
-                                <i class="fas fa-question-circle">KPI STATUS</i> <!-- Font Awesome question circle icon -->
-                            {% endif %}
-                            <li><a href="{{ path('app_system_details', {'id': pair.system.id}) }}">View Details</a></li>
-                            <form action="{{ path('delete_system', {'id': pair.system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pair.system.id) }}">
-                                <button type="submit">Delete</button> <!-- Delete button -->
-                            </form>
-                        </ul>
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-cube"></i> Systems </a>
+                    <div class="dash-nav-dropdown-menu">
+
+                        <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+
+
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="dash-app">
+            <header class="dash-toolbar">
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </a>
+
+                <div class="tools">
+
+
+                    <button onclick="location.href='/logout';" type="button" class="btn custom-sign-out-btn me-2">Sign Out</button>
+                </div>
+            </header>
+
+
+
+            <!--------------------------------- Page Content ------------------>
+            <main class="dash-content">
+                <div class="container-fluid">
+                    <div class="row dash-row">
+
+                        <!--------------------------------- Systems ------------------>
+                        <div class="container">
+
+                        <!--------------------------------------------------->
+
+                        <div class="row">
+                            {% for pair in systemKpiPairs %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card card-margin">
+                                        <div class="card-header no-border">
+                                            <h5 class="card-title">System: {{ pair.system.name }}</h5>
+                                        </div>
+                                        <div class="card-body pt-0">
+
+                                            <div class="widget-49">
+
+                                                <div class="widget-49-title-wrapper">
+                                                    <div class="widget-49-date-primary">
+                                                        {% if pair.kpi == 'true' %}
+                                                            <i class="fas fa-check-circle"></i> <!-- Font Awesome check circle icon -->
+                                                        {% elseif pair.kpi == 'false' %}
+                                                            <i class="fas fa-times-circle"></i> <!-- Font Awesome times circle icon -->
+                                                        {% else %}
+                                                            <i class="fas fa-question-circle"></i> <!-- Font Awesome question circle icon -->
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <div class="widget-devices">
+                                                        <div class="widget-50-Det">
+                                                            <a class="btn btn-sm btn-flash-border-primary">Devices:</a>
+                                                        </div>
+
+                                                        <ol class="widget-50-points">
+                                                            {% for dev in pair.Devices %}
+                                                                <li class="widget-50-item"><span>{{dev.UserAlias}}</span></li>
+                                                            {% endfor %}
+                                                        </ol>
+                                                    </div>
+                                                </div>
+
+
+                                                <ol class="widget-49-points">
+                                                <form action="{{ path('delete_system', {'id': pair.system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pair.system.id) }}">
+                                                    <button type="submit" class="btn custom-sign-out-btn me-2">Delete</button> <!-- Delete button -->
+                                                </form>
+                                                    <div class="widget-49-Details">
+                                                        <a href="{{ path('app_system_details', {'id': pair.system.id}) }}" class="btn btn-sm btn-flash-border-primary">View Details</a>
+                                                    </div>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+
+
+
+
+            </main>
+        </div>
     </div>
-    <li><a href="/system_registration" class="nav-link px-2 text-white">Create system</a></li>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/js/spur.js"></script>
+
+
 {% endblock %}
