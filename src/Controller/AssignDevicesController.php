@@ -42,6 +42,7 @@ class AssignDevicesController extends AbstractController
                 'userAlias' => $userAlias,
                 'typeName' => $typeName,
                 'parameters' => $parameters,
+                'imagePath' => $this->getPicture($typeName),
             ];
         }
         return $this->render('assign_devices/index.html.twig', [
@@ -49,6 +50,16 @@ class AssignDevicesController extends AbstractController
             'systemId' => $id,
             ]);
     }
+        public function getPicture($typeName):string
+    {
+        return match ($typeName) {
+            "Temperature-Sensor" =>  '/img/temperature.png',
+            "Pressure-Sensor" => '/img/pressure.png',
+            "Noise-Sensor" => '/img/noise.png',
+            default =>  '/public/img/unknown.png',
+        };
+    }
+
     #[Route('/assign_devices', name: 'handle_device_assignment', methods: ['POST'])]
     public function handleDeviceAssignment(Request $request): Response
     {

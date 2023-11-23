@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\HttpKernel\KernelInterface;
 use App\Entity\Device;
 use App\Entity\KPI;
 use App\Entity\Systems;
@@ -51,6 +51,7 @@ class SystemDetailsController extends AbstractController
                 'userAlias' => $userAlias,
                 'typeName' => $typeName,
                 'parameters' => $parameters,
+                'imagePath' => $this->getPicture($typeName),
             ];
         }
 
@@ -75,6 +76,15 @@ class SystemDetailsController extends AbstractController
             'user' => $user,
             'kpis' => $systemKPIs,
         ]);
+    }
+    public function getPicture($typeName):string
+    {
+        return match ($typeName) {
+            "Temperature-Sensor" =>  '/img/temperature.png',
+            "Pressure-Sensor" => '/img/pressure.png',
+            "Noise-Sensor" => '/img/noise.png',
+            default =>  '/public/img/unknown.png',
+        };
     }
     public function callKpi($kpiF, $parVal, $kpiVal):string
     {
