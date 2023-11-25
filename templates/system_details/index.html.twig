@@ -1,8 +1,77 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomePageLoggedController!{% endblock %}
+{% block title %}System Details{% endblock %}
 {% block body %}
     <style>
+        .table-container {
+            max-width: 900px; /* Устанавливаем максимальную ширину контейнера таблицы */
+
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .widget-49-wrapper {
+            display: flex;
+            /* Other styles for the wrapper */
+        }
+        .widget-49-date-primary {
+            /* Add styles to the parent div */
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Align items vertically */
+            justify-content: center; /* Center content horizontally */
+            /* You can add more styles here as needed */
+        }
+        .widget-49-title-wrapper {
+            margin-right: 20px; /* Adjust the right margin to add space */
+            margin-bottom: 25px;
+            /* Other styles for the title wrapper */
+        }
+
+        .widget-devices {
+            margin-left: 80px; /* Adjust the left margin to add space */
+            /* Other styles for the devices container */
+        }
+        .widget-49-date-primary i {
+            /* Add styles to the icons */
+            font-size: 50px; /* Adjust the icon size */
+            /* You can add more styles here as needed */
+        }
+
+        .widget-49-points {
+            display: flex;
+            margin-left: -25px;
+            flex-direction: row; /* Arrange items horizontally */
+            /* Other styles for the ol container */
+        }
+
+        .widget-49-Det::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .widget-49-Details {
+            margin-left: 55px; /* Adjust margin for spacing */
+            /* Other styles for the details div */
+        }
+
         table {
             border-collapse: collapse;
             width: 100%; /* Set table width to 100% of the parent container */
@@ -28,89 +97,195 @@
         .user-card {
             border: 1px solid #ccc;
             padding: 10px;
-            /* Additional styles for the user card */
+
+
+
+            .button-container {
+                display: flex;
+                gap: 40px;
+            }
         }
     </style>
-
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+<div class="dash">
+    <div class="dash-nav dash-nav-dark">
+        <header>
+            <a href="#!" class="menu-toggle">
+                <i class="fas fa-bars"></i>
+                <a href="/homepage/Logged" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
             </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
-            </ul>
 
 
+        </header>
+        <nav class="dash-nav-list">
+            <a href="/homepage/Logged" class="dash-nav-item">
+                <i class="fas fa-home"></i> Home </a>
 
-            <div class="text-end">
-                <button onclick="location.href = '/logout';" type="button" class="btn btn-outline-light me-2">Sign Out</button>
-            </div>
-        </div>
-    </div>
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
+            <a href="/user/profile" class="dash-nav-item">
+                <i class="fa fa-user-circle"></i> User </a>
 
 
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-cube"></i> Systems </a>
+                <div class="dash-nav-dropdown-menu">
 
-
-    <h1>All Devices Details</h1>
-
-    <div class="row">
-        {% for deviceDetail in deviceDetails %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">User Alias: {{ deviceDetail.userAlias }}</p>
-                        <img src="{{ asset(deviceDetail.imagePath) }}" alt="{{ deviceDetail.userAlias }} Image">
-                        <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
-                        <ul class="list-group list-group-flush">
-                            {% for parameter in deviceDetail.parameters %}
-                                <li>{{ parameter.name }}</li>
-                                {% set jsonValues = parameter.values %}
-                                <ul>
-                                    {% for value in jsonValues %}
-                                        <li>{{ value }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
                 </div>
-                <form action="{{ path('disconnect_device', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
-                    <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
-                    <button type="submit">Delete</button> <!-- Delete button -->
-                </form>
-                <li><a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}">Create KPI</a></li>
             </div>
-        {% endfor %}
-        {% if user is defined and user == systemOwner %}
-            <li><a href="{{ path('app_assign_devices', {'id': systemId}) }}">Assign Device</a></li>
-            <li><a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}">Assign to users</a></li>
 
+
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-info"></i> About </a>
+                <div class="dash-nav-dropdown-menu">
+                    <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                </div>
             </div>
-        {% endif %}
-        <table>
-            <tr>
-                <th>Parameter Name</th>
-                <th>Parameter Value</th>
-                <th>Function</th>
-                <th>KPI Value</th>
-                <th>Result</th>
-            </tr>
-            {% for kpi in kpis %}
-                <tr>
-                    <td>{{ kpi.paramName }}</td>
-                    <td>{{ kpi.paramVal }}</td>
-                    <td>{{ kpi.function }}</td>
-                    <td>{{ kpi.value }}</td>
-                    <td>{{ kpi.result }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+        </nav>
+    </div>
+    <div class="dash-app">
+        <header class="dash-toolbar">
+            <a href="#!" class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </a>
+
+            <div class="tools">
+
+
+                <button onclick="location.href='/logout';" type="button" class="btn custom-sign-out-btn me-2">Sign Out</button>
+            </div>
+        </header>
+
+
+
+        <!--------------------------------- Page Content ------------------>
+        <main class="dash-content">
+            <div class="container-fluid">
+                <div class="row dash-row">
+
+                    <h2 class="fw-bold mb-2 text">System Details</h2>
+
+                    {% if deviceDetails is empty %}
+                        <p class="text-black-50 mb-5">Choose the action:</p>
+                    {% else %}
+                    <p class="text-black-50 mb-5"></p>
+                    {% endif %}
+                    <h1></h1>
+
+
+                    <div class="row">
+                        {% for deviceDetail in deviceDetails %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card card-margin">
+                                    <div class="card-header no-border">
+                                        <h5 class="card-title">Device: {{ deviceDetail.userAlias }}</h5>
+                                    </div>
+
+                                    <div class="card-body pt-0">
+                                        <div class="widget-49">
+                                            <div class="widget-49-title-wrapper">
+                                            <img src="{{ asset(deviceDetail.imagePath) }}" alt="{{ deviceDetail.userAlias }} Image" width="80" height="80" class="img-fluid mb-2">
+                                            <div class="widget-devices">
+                                            <div class="widget-50-Det">
+                                                <a class="btn btn-sm btn-flash-border-primary">Parameters:</a>
+                                            </div>
+                                            <ul class="list-group list-group-flush">
+                                            {% for parameter in deviceDetail.parameters %}
+                                            <ol class="widget-50-points">
+
+                                                {{ parameter.name }}:
+                                                {% set jsonValues = parameter.values %}
+
+                                                    {% for value in jsonValues %}
+                                                        {{ value }}
+                                                    {% endfor %}
+                                            </ol>
+                                            {% endfor %}
+                                            </ul>
+                                            </div>
+                                            </div>
+
+                                                <form action="{{ path('disconnect_device', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
+                                                    <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
+                                                    <button type="submit" class="btn btn-danger">Delete Device</button>
+                                                </form>
+                                                <div class="widget-49-Details">
+                                                    <a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}" class="btn btn-sm btn-flash-border-primary"  >Create KPI</a>
+                                                </div>
+
+
+                                        </div>
+
+
+                                        </div>
+                                       </div>
+
+                                </div>
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                    {% if user is defined and user == systemOwner %}
+                        <div class="button-container">
+                            <a href="{{ path('app_assign_devices', {'id': systemId}) }}" class="create-btn">Assign Device</a>
+                            <a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}" class="create-btn">Assign to Users</a>
+                        </div>
+                    {% endif %}
+
+
+
+                    <h1></h1>
+                    <h1></h1>
+                    {% if deviceDetails is empty %}
+                        <h1></h1>
+                    {% else %}
+                    <h1 class="me-2 mt-3">KPIs Details</h1>
+                    <div class="table-container">
+                        <table class="table table-striped table-bordered">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Parameter Name</th>
+                                <th>Parameter Value</th>
+                                <th>Function</th>
+                                <th>KPI Value</th>
+                                <th>Result</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for kpi in kpis %}
+                                <tr>
+                                    <td>{{ kpi.paramName }}</td>
+                                    <td>{{ kpi.paramVal }}</td>
+                                    <td>{{ kpi.function }}</td>
+                                    <td>{{ kpi.value }}</td>
+                                    <td>{{ kpi.result }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </main>
+
+
+
+    </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/js/spur.js"></script>
+
+
+
 {% endblock %}

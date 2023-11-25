@@ -24,31 +24,108 @@
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     </style>
-    <form action="{{ path('handle_user_assignment', {'id': systemId}) }}" method="post">
-        {% for user in users %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">User email: {{ user.email }}</h5>
-                            <ul class="list-group list-group-flush">
-                                {% for role in user.roles %}
-                                    <li>{{ role }}</li>
-                                {% endfor %}
-                            </ul>
+    <div class="dash">
+        <div class="dash-nav dash-nav-dark">
+            <header>
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                    <a href="/homepage/Logged" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
+                </a>
 
-                        </div>
+
+
+            </header>
+            <nav class="dash-nav-list">
+                <a href="/homepage/Logged" class="dash-nav-item">
+                    <i class="fas fa-home"></i> Home </a>
+
+                <a href="/user/profile" class="dash-nav-item">
+                    <i class="fa fa-user-circle"></i> User </a>
+
+
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-cube"></i> Systems </a>
+                    <div class="dash-nav-dropdown-menu">
+
+                        <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
                     </div>
                 </div>
-        {% endfor %}
-        <div id="user-not-found" style="color: red; display: none;">
-            User does not exist. Please register first.
+
+
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                    </div>
+                </div>
+            </nav>
         </div>
-        <div id="user-already-added" style="color: red; display: none;">
-            User is already in the system.
+        <div class="dash-app">
+            <header class="dash-toolbar">
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </a>
+
+                <div class="tools">
+
+
+                    <button onclick="location.href='/logout';" type="button" class="btn custom-sign-out-btn me-2">Sign Out</button>
+                </div>
+            </header>
+
+
+
+
+            <!--------------------------------- Page Content ------------------>
+            <main class="dash-content">
+                <div class="container-fluid">
+                    <div class="row dash-row">
+
+
+                        <form action="{{ path('handle_user_assignment', {'id': systemId}) }}" method="post">
+                            {% for user in users %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">User email: {{ user.email }}</h5>
+                                            <ul class="list-group list-group-flush">
+                                                {% for role in user.roles %}
+                                                    <li>{{ role }}</li>
+                                                {% endfor %}
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div id="user-not-found" style="color: red; display: none;">
+                                User does not exist. Please register first.
+                            </div>
+                            <div id="user-already-added" style="color: red; display: none;">
+                                User is already in the system.
+                            </div>
+                            <input type="email" name="email" id="email" placeholder="Enter email address" required>
+                            <button type="submit">Add User</button>
+                        </form>
+
+
+
+
+                    </div>
+                </div>
+            </main>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+            <script src="/js/spur.js"></script>
+
         </div>
-        <input type="email" name="email" id="email" placeholder="Enter email address" required>
-        <button type="submit">Add User</button>
-    </form>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

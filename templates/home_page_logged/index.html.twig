@@ -55,7 +55,7 @@
             <header>
                 <a href="#!" class="menu-toggle">
                     <i class="fas fa-bars"></i>
-                    <a href="index.html" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
+                    <a href="/homepage/Logged" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
                 </a>
 
 
@@ -63,7 +63,7 @@
             </header>
             <nav class="dash-nav-list">
                 <a href="/homepage/Logged" class="dash-nav-item">
-                    <i class="fas fa-home"></i> Dashboard </a>
+                    <i class="fas fa-home"></i> Home </a>
 
                 <a href="/user/profile" class="dash-nav-item">
                     <i class="fa fa-user-circle"></i> User </a>
@@ -110,11 +110,12 @@
                     <div class="row dash-row">
 
                         <!--------------------------------- Systems ------------------>
-                        <div class="container">
+
 
                         <!--------------------------------------------------->
 
                         <div class="row">
+
                             {% for pair in systemKpiPairs %}
                                 <div class="col-md-4 mb-4">
                                     <div class="card card-margin">
@@ -154,7 +155,7 @@
                                                 <form action="{{ path('delete_system', {'id': pair.system.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pair.system.id) }}">
-                                                    <button type="submit" class="btn custom-sign-out-btn me-2">Delete</button> <!-- Delete button -->
+                                                    <button type="submit" class="btn btn-danger">Delete System</button>
                                                 </form>
                                                     <div class="widget-49-Details">
                                                         <a href="{{ path('app_system_details', {'id': pair.system.id}) }}" class="btn btn-sm btn-flash-border-primary">View Details</a>
@@ -171,9 +172,9 @@
 
 
 
-            </main>
         </div>
     </div>
+            </main>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

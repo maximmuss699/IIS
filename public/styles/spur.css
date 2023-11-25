@@ -2594,6 +2594,19 @@ fieldset:disabled a.btn {
   border-radius: 8px;
   transition: background-color 0.3s ease;
 }
+.create-btn {
+
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  font-size: 19px;
+  background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  color: #fff1f2;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  margin-right: 40px; /* Space between buttons */
+
+}
 
 .custom-sign-out-btn:hover {
   background-color: #e2e6ea; /* Darker background on hover */
