@@ -42,6 +42,7 @@
                                         },
                                         'label': 'Email'
                                     }) }}
+                                    {{ form_errors(registrationForm.email) }} <!-- Display errors for the email field -->
                                 </div>
 
 
@@ -53,6 +54,7 @@
                                             'placeholder': 'Password'
                                         }
                                     }) }}
+                                    {{ form_errors(registrationForm.plainPassword) }} <!-- Display errors for the email field -->
                                 </div>
 
 
