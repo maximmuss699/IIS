@@ -18,15 +18,17 @@ class SystemDetailsController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-    public function getUnit($typeName):string
+
+    public function getUnit($typeName): string
     {
         return match ($typeName) {
-            "Temperature-Sensor" =>  '°C',
+            "Temperature-Sensor" => '°C',
             "Pressure-Sensor" => 'bar',
             "Noise-Sensor" => 'db',
-            default =>  '/public/img/unknown.png',
+            default => '/public/img/unknown.png',
         };
     }
+
     #[Route('/system_details{id}', name: 'app_system_details')]
     public function index($id): Response
     {
@@ -55,7 +57,7 @@ class SystemDetailsController extends AbstractController
                 $units[] = $this->getUnit($param->getType()->getName());
             }
 
-            usort($parameters, function($a, $b) {
+            usort($parameters, function ($a, $b) {
                 return $a->getId() - $b->getId();
             });
 
@@ -82,7 +84,7 @@ class SystemDetailsController extends AbstractController
                 $kpiF = $kpi->getFunction();
                 $systemKPIs[] = [
                     'function' => $this->getFunction($kpiF),
-                    'value'=> $kpi->getValue(),
+                    'value' => $kpi->getValue(),
                     'paramName' => $kpi->getParameter()->getName(),
                     'paramVal' => end($array),
                     'result' => $this->callKpi($kpiF, end($array), $kpi->getValue()),
@@ -100,19 +102,19 @@ class SystemDetailsController extends AbstractController
         ]);
     }
 
-    public function getPicture($typeName):string
+    public function getPicture($typeName): string
     {
         return match ($typeName) {
-            "Temperature-Sensor" =>  '/img/temperature.png',
+            "Temperature-Sensor" => '/img/temperature.png',
             "Pressure-Sensor" => '/img/pressure.png',
             "Noise-Sensor" => '/img/noise.png',
-            default =>  '/public/img/unknown.png',
+            default => '/public/img/unknown.png',
         };
     }
-    public function callKpi($kpiF, $parVal, $kpiVal):string
+
+    public function callKpi($kpiF, $parVal, $kpiVal): string
     {
-        switch ($kpiF)
-        {
+        switch ($kpiF) {
             case "gt":
                 if ($kpiVal < $parVal)
                     return "true";
@@ -130,21 +132,23 @@ class SystemDetailsController extends AbstractController
                     return "true";
                 break;
             default:
-                return (string) $kpiF;
+                return (string)$kpiF;
         }
         return "false";
     }
+
     public function getFunction($kip): string
     {
         return match ($kip) {
-            "lt" => "less then",
-            "gt" => "more then",
-            "eq" => "equal to",
-            "neq" => "not equal to",
-            default => "error function not found",
+            "lt" => "is less then",
+            "gt" => "is more then",
+            "eq" => "is equal to",
+            "neq" => "is not equal to",
+            default => "is error function not found",
         };
 
     }
+
     #[Route('/disconnect/{id}', name: 'disconnect_device')]
     public function disconnectDevice(Request $request, int $id): Response
     {
@@ -156,27 +160,30 @@ class SystemDetailsController extends AbstractController
         if (!$system) {
             throw $this->createNotFoundException('System not found');
         }
-        if ($device->getSystems() == $system)
-        {
+        if ($device->getSystems() == $system) {
             $device->setSystems(null);
         }
         $entityManager->flush();
 
         // Redirect to the forum page or wherever you want after deletion
-        return $this->redirectToRoute('app_system_details', ['id' => $id]);    }
+        return $this->redirectToRoute('app_system_details', ['id' => $id]);
+    }
 
-#[Route('/removeKPI/{id}', name: 'remove_kpi')]
+    #[Route('/removeKPI/{id}', name: 'remove_kpi')]
     public function removeKPI(Request $request, int $id): Response
-{
-    $kpiID = $request->request->get('kpi_id');
-    $entityManager = $this->entityManager;
-    $kpi = $entityManager->getRepository(KPI::class)->find($kpiID);
-    $kpi->setParameter(null);
-    $kpi->setSystems(null);
-    $entityManager->remove($kpi);
-    $entityManager->flush();
+    {
+        $kpiID = $request->request->get('kpi_id');
+        $entityManager = $this->entityManager;
+        $kpi = $entityManager->getRepository(KPI::class)->find($kpiID);
+        $kpi->setParameter(null);
+        $kpi->setSystems(null);
+        $entityManager->remove($kpi);
+        $entityManager->flush();
 
-    // Redirect to the forum page or wherever you want after deletion
-    return $this->redirectToRoute('app_system_details', ['id' => $id]);    }
+        // Redirect to the forum page or wherever you want after deletion
+        return $this->redirectToRoute('app_system_details', ['id' => $id]);
+    }
+
+
 
 }

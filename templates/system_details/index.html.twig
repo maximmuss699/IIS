@@ -76,40 +76,25 @@
             margin-left: 125px; /* Adjust margin for spacing */
             /* Other styles for the details div */
         }
+        .table-wrapper {
+            display: flex;
+            justify-content: center;
+            min-width: 1000px;
+        }
 
-        table {
-            border-collapse: collapse;
-            width: 100%; /* Set table width to 100% of the parent container */
-            max-width: 60%; /* Limit the maximum width to 60% of the screen */
-            margin: 0 auto; /* Center the table horizontally */
+        .table-container {
+            overflow-x: auto;
         }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
+
+        .center-table {
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 40px; /* Adjust the spacing as needed */
+            width: 100%;
         }
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-        .user-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust the column width as needed */
-            gap: 20px; /* Gap between user cards */
-        }
 
-        .user-card {
-            border: 1px solid #ccc;
-            padding: 10px;
-
-
-
-            .button-container {
-                display: flex;
-                gap: 40px;
-            }
-        }
     </style>
 <div class="dash">
     <div class="dash-nav dash-nav-dark">
@@ -242,16 +227,49 @@
                             </div>
                         </div>
                         <h1 class="me-2 mt-3">KPIs Details</h1>
-                        <div class="table-container">
-                            <table class="table table-striped table-bordered">
-                                <!-- Table content -->
-                            </table>
+                        <div class="table-wrapper">
+                            <div class="table-container text-center">
+                                <table class="center-table">
+                                    <tr>
+                                        <th>Parameter Name</th>
+                                        <th>Parameter Value</th>
+                                        <th>Function</th>
+                                        <th>KPI Value</th>
+                                        <th>Result</th>
+                                        <th></th>
+                                    </tr>
+                                    {% for kpi in kpis %}
+                                        <tr>
+                                            <td>{{ kpi.paramName }}</td>
+                                            <td>{{ kpi.paramVal }}</td>
+                                            <td>{{ kpi.function }}</td>
+                                            <td>{{ kpi.value }}</td>
+                                            <td>
+                                                {% if kpi.result == 'true' %}
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                {% elseif kpi.result == 'false' %}
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                {% else %}
+                                                    {{ kpi.result }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <form action="{{ path('remove_kpi', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
+                                                    <input type="hidden" name="kpi.id" value="{{ kpi.id }}">
+                                                    <button type="submit" class="btn btn-danger">Delete KPI</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </main>
-
 
 
     </div>
