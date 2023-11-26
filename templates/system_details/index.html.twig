@@ -57,7 +57,7 @@
 
         .widget-49-points {
             display: flex;
-            margin-left: -25px;
+            margin-left: 10px;
             flex-direction: row; /* Arrange items horizontally */
             /* Other styles for the ol container */
         }
@@ -169,106 +169,85 @@
         <main class="dash-content">
             <div class="container-fluid">
                 <div class="row justify-content-center">
-                    <form action="{{ path('handle_device_assignment', {'id': systemId}) }}" method="post">
-                        {% if deviceDetails is empty %}
-                            <p>No devices found.</p>
-                        {% else %}
-                            <div class="row justify-content-center mb-3">
-                            {% for deviceDetail in deviceDetails %}
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                    <div class="card" style="min-height: 250px;">
-                                        <div class="card-header no-border">
-                                            <h5 class="card-title">Device: {{ deviceDetail.userAlias }}</h5>
-                                        </div>
-
-                                        <div class="card-body pt-0">
-                                            <div class="widget-49">
-                                                <div class="widget-49-title-wrapper">
-                                                    <img src="{{ asset(deviceDetail.imagePath) }}" alt="{{ deviceDetail.userAlias }} Image" width="80" height="80" class="img-fluid mb-2">
-                                                    <div class="widget-parameters">
-                                                        <div class="widget-50-Det">
-                                                            <a class="btn btn-sm btn-flash-border-primary">Parameters:</a>
-                                                        </div>
-                                                        <ul class="list-group list-group-flush">
-                                                            {% for parameter in deviceDetail.parameters %}
-                                                                <li class="list-group-item">
-                                                                    <strong>{{ parameter.parameter.name }}:</strong>
-                                                                    {% set jsonValues = parameter.parameter.values %}
-                                                                    {% if jsonValues is iterable %}
-                                                                        {# Get the last value in the array #}
-                                                                        {% set lastValue = jsonValues|last %}
-                                                                        {{ lastValue }}
-                                                                        {{ parameter.unit }}
-                                                                    {% endif %}
-                                                                </li>
-                                                            {% endfor %}
-                                                        </ul>
+                    {% if deviceDetails is empty %}
+                        <!-- No devices found -->
+                        <p>No devices found.</p>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 text-center">
+                                <a href="{{ path('app_assign_devices', {'id': systemId}) }}" class="btn btn-primary">Assign Device</a>
+                                <a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}" class="btn btn-primary">Assign to Users</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Devices exist -->
+                        <div class="row justify-content-center mb-3">
+                        {% for deviceDetail in deviceDetails %}
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                <div class="card" style="min-height: 250px;">
+                                    <div class="card-header no-border">
+                                        <h5 class="card-title">Device: {{ deviceDetail.userAlias }}</h5>
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <div class="widget-49">
+                                            <div class="widget-49-title-wrapper">
+                                                <img src="{{ asset(deviceDetail.imagePath) }}" alt="{{ deviceDetail.userAlias }} Image" width="80" height="80" class="img-fluid mb-2">
+                                                <div class="widget-parameters">
+                                                    <div class="widget-50-Det">
+                                                        <a class="btn btn-sm btn-flash-border-primary">Parameters:</a>
                                                     </div>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for parameter in deviceDetail.parameters %}
+                                                            <li class="list-group-item">
+                                                                <strong>{{ parameter.parameter.name }}:</strong>
+                                                                {% set jsonValues = parameter.parameter.values %}
+                                                                {% if jsonValues is iterable %}
+                                                                    {% set lastValue = jsonValues|last %}
+                                                                    {{ lastValue }}
+                                                                    {{ parameter.unit }}
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
                                                 </div>
-                                                <ol class="widget-49-points">
-                                                    <form action="{{ path('disconnect_device', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
-                                                        <input type="hidden" name="_method" value="DELETE">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
-                                                        <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
-                                                        <button type="submit" class="btn btn-danger">Delete Device</button>
-                                                    </form>
-                                                    <div class="widget-49-Details">
-                                                        <a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}" class="btn btn-sm btn-flash-border-primary">Create KPI</a>
-                                                    </div>
-                                                </ol>
+                                            </div>
+                                            <div class="widget-49-points">
+                                                <form action="{{ path('disconnect_device', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this device?')">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
+                                                    <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
+                                                    <button type="submit" class="btn btn-danger">Delete Device</button>
+                                                </form>
+                                                <div class="widget-49-Details">
+                                                    <a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}" class="btn btn-sm btn-flash-border-primary">Create KPI</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {% if loop.index % 3 == 0 or loop.last %}
-                                    </div>
-                                    {% if not loop.last %}
-                                        <div class="row justify-content-center mb-3">
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
                             </div>
-                            <div class="row justify-content-center">
-                                <div class="col-md-6 text-center">
-                                    <a href="{{ path('app_assign_devices', {'id': systemId}) }}" class="btn btn-primary">Assign Device</a>
-                                    <a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}" class="btn btn-primary">Assign to Users</a>
+                            {% if loop.index % 3 == 0 or loop.last %}
+                                <!-- Close row after every 3 cards or at the last card -->
                                 </div>
+                                {% if not loop.last %}
+                                    <div class="row justify-content-center mb-3">
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                        <!-- Button row and KPI details -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 text-center">
+                                <a href="{{ path('app_assign_devices', {'id': systemId}) }}" class="btn btn-primary">Assign Device</a>
+                                <a href="{{ path('app_assign_users_to_system', {'id': systemId}) }}" class="btn btn-primary">Assign to Users</a>
                             </div>
-                            <h1 class="me-2 mt-3">KPIs Details</h1>
-                            <div class="table-container">
-                                <table class="table table-striped table-bordered">
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th>Parameter Name</th>
-                                        <th>Parameter Value</th>
-                                        <th>Function</th>
-                                        <th>KPI Value</th>
-                                        <th>Result</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for kpi in kpis %}
-                                        <tr>
-                                            <td>{{ kpi.paramName }}</td>
-                                            <td>{{ kpi.paramVal }}</td>
-                                            <td>{{ kpi.function }}</td>
-                                            <td>{{ kpi.value }}</td>
-                                            <td>{{ kpi.result }}</td>
-                                            <td>
-                                                <form action="{{ path('remove_kpi', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
-                                                    <input type="hidden" name="kpi.id" value="{{ kpi.id }}">
-                                                    <button type="submit" class="btn btn-danger">Delete KPI</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% endif %}
-                    </form>
+                        </div>
+                        <h1 class="me-2 mt-3">KPIs Details</h1>
+                        <div class="table-container">
+                            <table class="table table-striped table-bordered">
+                                <!-- Table content -->
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </main>

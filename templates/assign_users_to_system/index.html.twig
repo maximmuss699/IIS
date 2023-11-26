@@ -79,24 +79,29 @@
 
 
 
-            <!--------------------------------- Page Content ------------------>
             <main class="dash-content">
                 <div class="container-fluid">
                     <div class="row dash-row">
-
-
                         <form action="{{ path('handle_user_assignment', {'id': systemId}) }}" method="post">
                             {% for user in users %}
                                 <div class="col-md-4 mb-4">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h5 class="card-title">User email: {{ user.email }}</h5>
+                                            <h5 class="card-title">User Details</h5> <!-- Title added here -->
+                                            <h6 class="card-subtitle mb-2 text-muted">Email: {{ user.email }}</h6> <!-- Email displayed -->
                                             <ul class="list-group list-group-flush">
                                                 {% for role in user.roles %}
-                                                    <li>{{ role }}</li>
+                                                    {% set roleColor = '' %}
+                                                    {% if role == 'ROLE_ADMIN' %}
+                                                        {% set roleColor = 'text-danger' %}
+                                                    {% elseif role == 'ROLE_USER' %}
+                                                        {% set roleColor = 'text-primary' %}
+                                                    {% elseif role == 'ROLE_BROKER' %}
+                                                        {% set roleColor = 'text-success' %}
+                                                    {% endif %}
+                                                    <li class="{{ roleColor }}">{{ role }}</li>
                                                 {% endfor %}
                                             </ul>
-
                                         </div>
                                     </div>
                                 </div>
@@ -107,13 +112,14 @@
                             <div id="user-already-added" style="color: red; display: none;">
                                 User is already in the system.
                             </div>
-                            <input type="email" name="email" id="email" placeholder="Enter email address" required>
-                            <button type="submit">Add User</button>
+
+                            <section class="p-4 text-center w-100">
+                                <div class="rounded-input">
+                                    <input type="email" name="email" id="email" placeholder="Enter email address" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add User</button>
+                            </section>
                         </form>
-
-
-
-
                     </div>
                 </div>
             </main>
