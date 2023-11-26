@@ -34,14 +34,32 @@ class AssignDevicesController extends AbstractController
 
             $userAlias = $device->getUserAlias();
             $typeName = $device->getType()->getName();
-            $parameters = $device->getType()->getParameters();
+            $parameters = $device->getType()->getParameters()->toArray();
+            $units = [];
+
+            foreach ($parameters as $param) {
+                $units[] = $this->getUnit($param->getType()->getName());
+            }
+
+            usort($parameters, function($a, $b) {
+                return $a->getId() - $b->getId();
+            });
+
+            $combinedDetails = [];
+
+            foreach ($parameters as $index => $param) {
+                $combinedDetails[] = [
+                    'parameter' => $param,
+                    'unit' => $units[$index],
+                ];
+            }
 
             // Gather device details in an array
             $deviceDetails[] = [
                 'device' => $device,
                 'userAlias' => $userAlias,
                 'typeName' => $typeName,
-                'parameters' => $parameters,
+                'parameters' => $combinedDetails,
                 'imagePath' => $this->getPicture($typeName),
             ];
         }
@@ -59,7 +77,15 @@ class AssignDevicesController extends AbstractController
             default =>  '/public/img/unknown.png',
         };
     }
-
+    public function getUnit($typeName):string
+    {
+        return match ($typeName) {
+            "Temperature-Sensor" =>  '°C',
+            "Pressure-Sensor" => 'bar',
+            "Noise-Sensor" => 'db',
+            default =>  '/public/img/unknown.png',
+        };
+    }
     #[Route('/assign_devices', name: 'handle_device_assignment', methods: ['POST'])]
     public function handleDeviceAssignment(Request $request): Response
     {
