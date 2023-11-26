@@ -22,40 +22,41 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', TextType::class, [
                 'required' => true,
-                'constraints' => [
-                    new Assert\NotBlank(), // Optional: Ensure the field is not blank
+                'label' => 'Email*', // Add asterisk to the label
+            'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Email is required',
+                    ]),
                     new Assert\Email([
-                        'message' => 'The email "{{ value }}" is not a valid email.', // Custom error message
+                        'message' => 'The email "{{ value }}" is not a valid email.',
                     ]),
                 ],
-                // Add more options or constraints if needed
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'label' => 'I agree to terms and conditions*',
                 'constraints' => [
-                    new IsTrue([
+                    new Assert\IsTrue([
                         'message' => 'You should agree to our terms.',
                     ]),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
+                'label' => 'Password*', // Add asterisk to the labe
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
+                    new Assert\NotBlank([
                         'message' => 'Please enter a password',
                     ]),
-                    new Length([
+                    new Assert\Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
-            ])
-        ;
+            ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -17,8 +17,9 @@ class UserProfileType extends AbstractType
         $builder
             ->add('email', TextType::class, [
                 'required' => true,
+                'label' => 'Email*', // Add asterisk to the label
                 'constraints' => [
-                    new Assert\NotBlank(), // Optional: Ensure the field is not blank
+                    new Assert\NotBlank(), // Ensure the field is not blank
                     new Assert\Email([
                         'message' => 'The email "{{ value }}" is not a valid email.', // Custom error message
                     ]),
@@ -30,7 +31,9 @@ class UserProfileType extends AbstractType
                     'autocomplete' => 'off', // Optional: Disable autocomplete
                     'placeholder' => '●●●●●●', // Placeholder for the password field
                 ],
+                'label' => 'Password*', // Add asterisk to the label
             ]);
+
         ;
     }
 
