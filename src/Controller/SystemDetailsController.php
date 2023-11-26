@@ -18,7 +18,15 @@ class SystemDetailsController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-
+    public function getUnit($typeName):string
+    {
+        return match ($typeName) {
+            "Temperature-Sensor" =>  '°C',
+            "Pressure-Sensor" => 'bar',
+            "Noise-Sensor" => 'db',
+            default =>  '/public/img/unknown.png',
+        };
+    }
     #[Route('/system_details{id}', name: 'app_system_details')]
     public function index($id): Response
     {
@@ -41,16 +49,29 @@ class SystemDetailsController extends AbstractController
             $userAlias = $device->getUserAlias();
             $typeName = $device->getType()->getName();
             $parameters = $device->getType()->getParameters()->toArray();
+            $units = [];
+
+            foreach ($parameters as $param) {
+                $units[] = $this->getUnit($param->getType()->getName());
+            }
+
             usort($parameters, function($a, $b) {
                 return $a->getId() - $b->getId();
             });
 
-            // Gather device details in an array
+            $combinedDetails = [];
+
+            foreach ($parameters as $index => $param) {
+                $combinedDetails[] = [
+                    'parameter' => $param,
+                    'unit' => $units[$index],
+                ];
+            }
             $deviceDetails[] = [
                 'device' => $device,
                 'userAlias' => $userAlias,
                 'typeName' => $typeName,
-                'parameters' => $parameters,
+                'parameters' => $combinedDetails,
                 'imagePath' => $this->getPicture($typeName),
             ];
         }
@@ -78,6 +99,7 @@ class SystemDetailsController extends AbstractController
             'kpis' => $systemKPIs,
         ]);
     }
+
     public function getPicture($typeName):string
     {
         return match ($typeName) {

@@ -40,12 +40,13 @@
         }
         .widget-49-title-wrapper {
             margin-right: 20px; /* Adjust the right margin to add space */
-            margin-bottom: 25px;
+            margin-left: 25px; /* Adjust the right margin to add space */
+            margin-bottom: 20px;
             /* Other styles for the title wrapper */
         }
 
-        .widget-devices {
-            margin-left: 80px; /* Adjust the left margin to add space */
+        .widget-parameters{
+            margin-left: 200px; /* Adjust the left margin to add space */
             /* Other styles for the devices container */
         }
         .widget-49-date-primary i {
@@ -60,7 +61,11 @@
             flex-direction: row; /* Arrange items horizontally */
             /* Other styles for the ol container */
         }
-
+        .widget-50-points {
+            margin-left: -25px;
+            flex-direction: row; /* Arrange items horizontally */
+            /* Other styles for the ol container */
+        }
         .widget-49-Det::after {
             content: "";
             display: block;
@@ -68,7 +73,7 @@
         }
 
         .widget-49-Details {
-            margin-left: 55px; /* Adjust margin for spacing */
+            margin-left: 170px; /* Adjust margin for spacing */
             /* Other styles for the details div */
         }
 
@@ -187,38 +192,38 @@
                                         <div class="widget-49">
                                             <div class="widget-49-title-wrapper">
                                             <img src="{{ asset(deviceDetail.imagePath) }}" alt="{{ deviceDetail.userAlias }} Image" width="80" height="80" class="img-fluid mb-2">
-                                            <div class="widget-devices">
+                                            <div class="widget-parameters">
                                             <div class="widget-50-Det">
                                                 <a class="btn btn-sm btn-flash-border-primary">Parameters:</a>
                                             </div>
                                             <ul class="list-group list-group-flush">
-                                            {% for parameter in deviceDetail.parameters %}
-                                            <ol class="widget-50-points">
+                                                {% for parameter in deviceDetail.parameters %}
+                                                    <ol class="widget-50-points">
+                                                        {{ parameter.parameter.name }}:
+                                                        {% set jsonValues = parameter.parameter.values %}
 
-                                                {{ parameter.name }}:
-                                                {% set jsonValues = parameter.values %}
-
-                                                    {% for value in jsonValues %}
-                                                        {{ value }}
-                                                    {% endfor %}
-                                            </ol>
-                                            {% endfor %}
+                                                        {% if jsonValues is iterable %}
+                                                            {# Get the last value in the array #}
+                                                            {% set lastValue = jsonValues|last %}
+                                                            {{ lastValue }}
+                                                            {{ parameter.unit }}
+                                                        {% endif %}
+                                                    </ol>
+                                                {% endfor %}
                                             </ul>
                                             </div>
                                             </div>
-
+                                                <ol class="widget-49-points">
                                                 <form action="{{ path('disconnect_device', {'id': systemId}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this system?')">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ systemId) }}">
                                                     <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
                                                     <button type="submit" class="btn btn-danger">Delete Device</button>
                                                 </form>
-                                                <div class="widget-49-Details">
-                                                    <a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}" class="btn btn-sm btn-flash-border-primary"  >Create KPI</a>
-                                                </div>
-
-
-                                        </div>
+                                            <div class="widget-49-Details">
+                                                <a href="{{ path('app_assign_k_p_i', {'id': deviceDetail.device.id}) }}" class="btn btn-sm btn-flash-border-primary"  >Create KPI</a>
+                                            </div>
+                                                </ol>
 
 
                                         </div>
@@ -281,6 +286,7 @@
                     </div>
                     {% endif %}
 
+                </div>
                 </div>
             </div>
         </main>
