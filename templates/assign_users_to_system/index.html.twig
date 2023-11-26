@@ -23,6 +23,42 @@
     <style>
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rounded-input {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .rounded-input input[type="email"] {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        button.btn-primary {
+            width: 100%;
+            max-width: 200px; /* Adjust button max-width as needed */
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
     </style>
     <div class="dash">
         <div class="dash-nav dash-nav-dark">
@@ -112,13 +148,22 @@
                             <div id="user-already-added" style="color: red; display: none;">
                                 User is already in the system.
                             </div>
-
-                            <section class="p-4 text-center w-100">
-                                <div class="rounded-input">
-                                    <input type="email" name="email" id="email" placeholder="Enter email address" required>
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6">
+                                        <section class="p-4">
+                                            <div class="input-container">
+                                                <div class="rounded-input">
+                                                    <input type="email" name="email" id="email" placeholder="Enter email address" required>
+                                                </div>
+                                                <div class="button-container">
+                                                    <button type="submit" class="btn btn-primary">Add User</button>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Add User</button>
-                            </section>
+                            </div>
                         </form>
                     </div>
                 </div>
