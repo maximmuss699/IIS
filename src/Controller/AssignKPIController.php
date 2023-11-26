@@ -45,7 +45,7 @@ class AssignKPIController extends AbstractController
             $entityManager->persist($kpi);
             $entityManager->flush();
 
-            // Redirect or do something else upon successful form submission
+            return $this->redirectToRoute('app_system_details', ['id' => $device->getSystems()->getId()]);
         }
 
 

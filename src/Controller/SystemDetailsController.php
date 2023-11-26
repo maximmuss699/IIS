@@ -64,7 +64,8 @@ class SystemDetailsController extends AbstractController
                     'value'=> $kpi->getValue(),
                     'paramName' => $kpi->getParameter()->getName(),
                     'paramVal' => end($array),
-                    'result' => $this->callKpi($kpiF, end($array), $kpi->getValue())
+                    'result' => $this->callKpi($kpiF, end($array), $kpi->getValue()),
+                    'id' => $kpi->getId()
                 ];
             }
         }
@@ -141,5 +142,19 @@ class SystemDetailsController extends AbstractController
 
         // Redirect to the forum page or wherever you want after deletion
         return $this->redirectToRoute('app_system_details', ['id' => $id]);    }
+
+#[Route('/removeKPI/{id}', name: 'remove_kpi')]
+    public function removeKPI(Request $request, int $id): Response
+{
+    $kpiID = $request->request->get('kpi_id');
+    $entityManager = $this->entityManager;
+    $kpi = $entityManager->getRepository(KPI::class)->find($kpiID);
+    $kpi->setParameter(null);
+    $kpi->setSystems(null);
+    $entityManager->remove($kpi);
+    $entityManager->flush();
+
+    // Redirect to the forum page or wherever you want after deletion
+    return $this->redirectToRoute('app_system_details', ['id' => $id]);    }
 
 }
