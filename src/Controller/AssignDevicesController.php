@@ -87,6 +87,7 @@ class AssignDevicesController extends AbstractController
             "Temperature-Sensor" =>  '/img/temperature.png',
             "Pressure-Sensor" => '/img/pressure.png',
             "Noise-Sensor" => '/img/noise.png',
+            "Humidity-Sensor" => '/img/humidity.png',
             default =>  '/public/img/unknown.png',
         };
     }
@@ -96,8 +97,8 @@ class AssignDevicesController extends AbstractController
             "Temperature-Sensor" =>  '°C',
             "Pressure-Sensor" => 'bar',
             "Noise-Sensor" => 'db',
-            "Humidity-Sensor" => '/img/humidity.png',
-            default =>  '/public/img/unknown.png',
+            "Humidity-Sensor" => '%',
+            default =>  '',
         };
     }
     #[Route('/assign_devices', name: 'handle_device_assignment', methods: ['POST'])]

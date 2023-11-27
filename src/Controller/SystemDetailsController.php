@@ -29,7 +29,8 @@ class SystemDetailsController extends AbstractController
             "Temperature-Sensor" => '°C',
             "Pressure-Sensor" => 'bar',
             "Noise-Sensor" => 'db',
-            default => '/public/img/unknown.png',
+            "Humidity-Sensor" => '%',
+            default => '',
         };
     }
 
