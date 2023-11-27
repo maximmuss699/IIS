@@ -103,11 +103,11 @@ class SystemDetailsController extends AbstractController
                 ];
             }
         }
-
+        dump($system->getUserOwner() === $user);
         return $this->render('system_details/index.html.twig', [
             'deviceDetails' => $deviceDetails,
             'systemId' => $id,
-            'systemOwner' => $system->getUserOwner(),
+            'systemOwner' => $system->getUserOwner() === $user,
             'user' => $user,
             'kpis' => $systemKPIs,
             'role' => $user->getRoles(),

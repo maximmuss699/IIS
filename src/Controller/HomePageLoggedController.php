@@ -64,15 +64,28 @@ class HomePageLoggedController extends AbstractController
     }
 
     #[Route('/delete-system/{id}', name: 'delete_system')]
-    public function deleteSystem(Request $request, int $id): Response
+    public function deleteSystem(Request $request, int $id, Security $security, UrlGeneratorInterface $urlGenerator ): Response
     {
         $entityManager = $this->entityManager;
         $system = $entityManager->getRepository(Systems::class)->find($id);
         $devices = $entityManager->getRepository(Device::class)->findAll();
 
 
+
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $user = $security->getUser();
         if (!$system) {
             throw $this->createNotFoundException('System not found');
+        }
+        if ($system->getUserOwner() !== $user)
+        {
+            $system->removeUser($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_home_page_logged');
         }
         foreach ($devices as $device)
         {
