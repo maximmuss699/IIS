@@ -47,7 +47,6 @@ class HomePageLoggedController extends AbstractController
                             $resultF = $this->calKPI($kpi) ? 'true' : 'false';
                         }
                     }
-                    dump($resultF);
                     $systemKpiPairs[] = [
                         'system' => $system,
                         'kpi' => $resultF,
