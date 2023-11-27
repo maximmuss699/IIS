@@ -70,6 +70,7 @@ class HomePageLoggedController extends AbstractController
         $system = $entityManager->getRepository(Systems::class)->find($id);
         $devices = $entityManager->getRepository(Device::class)->findAll();
 
+
         if (!$system) {
             throw $this->createNotFoundException('System not found');
         }
@@ -79,6 +80,14 @@ class HomePageLoggedController extends AbstractController
             {
                 $device->setSystems(null);
             }
+        }
+
+        $kpis = $entityManager->getRepository(KPI::class)->findBy(['systems' => $id]);
+        foreach ($kpis as $kpi)
+        {
+            $kpi->setParameter(null);
+            $entityManager->flush();
+            $entityManager->remove($kpi);
         }
         $entityManager->flush();
         $entityManager->remove($system);
