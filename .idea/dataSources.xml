@@ -8,11 +8,11 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/app</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="app@103.13.211.192" uuid="aeb5b8ed-fd5b-4b86-9b24-d7533362c605">
+    <data-source source="LOCAL" name="app@165.232.77.124" uuid="9cb24b31-ad31-41e6-8a09-b1458a0d5e82">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://103.13.211.192:5432/app</jdbc-url>
+      <jdbc-url>jdbc:postgresql://165.232.77.124:5432/app</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

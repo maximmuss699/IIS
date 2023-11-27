@@ -92,6 +92,21 @@
             border-spacing: 40px; /* Adjust the spacing as needed */
             width: 100%;
         }
+        .widget-50-Det {
+            text-align: center; /* Center content horizontally */
+            /* Add any specific styles for this element */
+        }
+
+        .container {
+            display: flex;
+            align-items: center; /* Vertical alignment */
+            margin-left: auto; /* Pushes the container to the right */
+            margin-right: auto; /* Pushes the container to the left */
+            /* Add additional styling as needed */
+        }
+        .container-list{
+            margin-left: -20px;
+        }
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 
@@ -201,19 +216,23 @@
                                                     <div class="widget-50-Det">
                                                         <a class="btn btn-sm btn-flash-border-primary">Parameters:</a>
                                                     </div>
-                                                    <ul class="list-group list-group-flush">
-                                                        {% for parameter in deviceDetail.parameters %}
-                                                            <li class="list-group-item">
-                                                                <strong>{{ parameter.parameter.name }}:</strong>
-                                                                {% set jsonValues = parameter.parameter.values %}
-                                                                {% if jsonValues is iterable %}
-                                                                    {% set lastValue = jsonValues|last %}
-                                                                    {{ lastValue }}
-                                                                    {{ parameter.unit }}
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
+                                                    <div class="container">
+                                                        <ul class="list-group list-group-flush">
+                                                            {% for parameter in deviceDetail.parameters %}
+                                                                <li class="list-group-item">
+                                                                    <strong>{{ parameter.parameter.name }}:</strong>
+                                                                    {% set jsonValues = parameter.parameter.values %}
+                                                                    {% if jsonValues is iterable %}
+                                                                        {% set lastValue = jsonValues|last %}
+                                                                        {{ lastValue }}
+                                                                        {{ parameter.unit }}
+                                                                    {% endif %}
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+
+
                                                 </div>
                                             </div>
                                             <div class="widget-49-points">
