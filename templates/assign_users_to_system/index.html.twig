@@ -50,14 +50,6 @@
             justify-content: center;
         }
 
-        button.btn-primary {
-            width: 100%;
-            max-width: 200px; /* Adjust button max-width as needed */
-            border-radius: 20px;
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
 
     </style>
     <div class="dash">
@@ -89,6 +81,27 @@
                 </div>
 
 
+
+                {% for rl in role %}
+                    {% if rl == "ROLE_ADMIN"%}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Admin</a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\admin"  class="dash-nav-dropdown-item">Admin</a>
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% elseif rl == "ROLE_BROKER" %}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Broker </a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
                 <div class="dash-nav-dropdown">
                     <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
                         <i class="fas fa-info"></i> About </a>

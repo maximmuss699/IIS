@@ -6,9 +6,13 @@ use App\Entity\Device;
 use App\Entity\Systems;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
+
 class AssignDevicesController extends AbstractController
 {
     private $entityManager;
@@ -18,7 +22,7 @@ class AssignDevicesController extends AbstractController
     }
 
     #[Route('/assign_devices{id}', name: 'app_assign_devices')]
-    public function index($id): Response
+    public function index($id,  Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
 
         $deviceRepository = $this->entityManager->getRepository(Device::class);
@@ -63,9 +67,18 @@ class AssignDevicesController extends AbstractController
                 'imagePath' => $this->getPicture($typeName),
             ];
         }
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $loggedUser = $security->getUser();
+
+
         return $this->render('assign_devices/index.html.twig', [
             'deviceDetails' => $deviceDetails,
             'systemId' => $id,
+            'role' => $loggedUser->getRoles(),
             ]);
     }
         public function getPicture($typeName):string

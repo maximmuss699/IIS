@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
-
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 class HomePageLoggedController extends AbstractController
 {
     private $entityManager;
@@ -21,14 +22,19 @@ class HomePageLoggedController extends AbstractController
     }
 
     #[Route('/homepage/Logged', name: 'app_home_page_logged')]
-    public function index(Security $security): Response
+    public function index(Request $request, Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
         $systemRepository = $this->entityManager->getRepository(Systems::class);
         $systems = $systemRepository->findAll();
         $kpiRepository = $this->entityManager->getRepository(KPI::class);
         $kpis = $kpiRepository->findAll();
-        $loggedUser = $security->getUser();
 
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $loggedUser = $security->getUser();
 
         $systemKpiPairs = [];
         $devices = [];
@@ -41,6 +47,7 @@ class HomePageLoggedController extends AbstractController
                             $resultF = $this->calKPI($kpi) ? 'true' : 'false';
                         }
                     }
+                    dump($resultF);
                     $systemKpiPairs[] = [
                         'system' => $system,
                         'kpi' => $resultF,

@@ -25,10 +25,16 @@ class UserProfileController extends AbstractController
     }
 
     #[Route('/user/profile', name: 'app_user_profile')]
-    public function index(Request $request): Response
+    public function index(Request $request, Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
         // Get the current user
-        $user = $this->getUser();
+
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $user = $security->getUser();
 
         if (!$user instanceof User) {
             throw $this->createNotFoundException('User not found');
@@ -55,13 +61,9 @@ class UserProfileController extends AbstractController
             return $this->redirectToRoute('app_home_page_logged');
         }
 
-        if (in_array('ROLE_ADMIN', $user->getRoles()))
-        {
-            return new RedirectResponse($this->urlGenerator->generate('app_admin'));
-        } else {
             return $this->render('user/profile.html.twig', [
                 'form' => $form->createView(),
+                'role' => $user->getRoles()
             ]);
-        }
     }
 }

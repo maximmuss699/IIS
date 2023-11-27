@@ -2,17 +2,84 @@
 
 {% block title %}Hello BrookerController!{% endblock %}
 
-{% block body %}
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+{% block body %} <div class="dash">
+    <div class="dash">
+        <div class="dash-nav dash-nav-dark">
+            <header>
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                    <a href="/homepage/Logged" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
+                </a>
+
+
+
+            </header>
+        <nav class="dash-nav-list">
+            <a href="/homepage/Logged" class="dash-nav-item">
+                <i class="fas fa-home"></i> Home </a>
+
+            <a href="/user/profile" class="dash-nav-item">
+                <i class="fa fa-user-circle"></i> User </a>
+
+
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-cube"></i> Systems </a>
+                <div class="dash-nav-dropdown-menu">
+
+                    <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
+                </div>
+            </div>
+
+
+
+            {% for rl in role %}
+                {% if rl == "ROLE_ADMIN"%}
+                    <div class="dash-nav-dropdown">
+                        <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                            <i class="fas fa-user-shield"></i> Admin</a>
+                        <div class="dash-nav-dropdown-menu">
+                            <a href="\admin"  class="dash-nav-dropdown-item">Admin</a>
+                            <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                        </div>
+                    </div>
+                {% elseif rl == "ROLE_BROKER" %}
+                    <div class="dash-nav-dropdown">
+                        <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                            <i class="fas fa-user-shield"></i> Broker </a>
+                        <div class="dash-nav-dropdown-menu">
+                            <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-info"></i> About </a>
+                <div class="dash-nav-dropdown-menu">
+                    <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                </div>
+            </div>
+        </nav>
+        </div>
+    </div>
+    <div class="dash-app">
+        <header class="dash-toolbar">
+            <a href="#!" class="menu-toggle">
+                <i class="fas fa-bars"></i>
             </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/homepage/Logged" class="nav-link px-2 text-secondary">Home</a></li>
-            </ul>
+            <div class="tools">
 
+
+                <button onclick="location.href='/logout';" type="button" class="btn custom-sign-out-btn me-2">Sign Out</button>
+            </div>
+        </header>
+
+
+        <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
 
             <div class="text-end">
@@ -21,37 +88,66 @@
         </div>
     </div>
     <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        .title{
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+        .subtitle{
+            margin-bottom: 10px;
+        }
     </style>
-     {% for deviceDetail in deviceDetails %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card" data-device-id="{{ deviceDetail.device.id }}">
-                        <p class="card-title">User Alias: {{ deviceDetail.userAlias }}</p>
-                        <p class="card-text">Type Name: {{ deviceDetail.typeName }}</p>
-                        <h6 class="card-subtitle mb-2 text-muted">Parameters</h6>
-                        <ul class="list-group list-group-flush">
-                                <form class="parameter-form">
-                                    <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
-                                    {% for parameter in deviceDetail.parameters %}
-                                        <div class="form-group">
-                                            <label for="{{ parameter.name }}">{{ parameter.name }}</label>
-                                            <input type="text" class="form-control" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}">
+        <main class="dash-content">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    {% for deviceDetail in deviceDetails %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card" data-device-id="{{ deviceDetail.device.id }}" style="min-height: 400px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="title">
+                                        <div class="text-center">
+                                            <h3 class="card-title">User Alias: {{ deviceDetail.userAlias }}</h3>
+                                            <h5 class="card-text">Type Name: {{ deviceDetail.typeName }}</h5>
                                         </div>
-                                    {% endfor %}
-                                    <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
-                                        Wrong input, numbers only.
                                     </div>
-
-                                    <button type="submit" class="btn btn-primary">Update Parameters</button>
-                                </form>
-                        </ul>
-                    </div>
+                                    <div class="subtitle">
+                                        <h6 class="card-subtitle mb-2 text-muted text-center">Parameters:</h6>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <form class="parameter-form">
+                                            <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
+                                            {% for parameter in deviceDetail.parameters %}
+                                                <div class="form-group text-center">
+                                                    <!-- Add color to parameter names -->
+                                                    <label for="{{ parameter.name }}" style="color: #007bff;">{{ parameter.name }}</label>
+                                                    <!-- Adjust input width and center it -->
+                                                    <input type="text" class="form-control mx-auto" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}" style="width: 60%;">
+                                                </div>
+                                            {% endfor %}
+                                            <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
+                                                Wrong input, numbers only.
+                                            </div>
+                                        </form>
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-   {% endfor %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        </main>
+
+
+
+
+    </div>
+</div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.parameter-form').on('submit', function(e) {
@@ -80,4 +176,8 @@
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/js/spur.js"></script>
 {% endblock %}

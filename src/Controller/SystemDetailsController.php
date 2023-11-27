@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Entity\Device;
 use App\Entity\KPI;
@@ -10,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
+
 class SystemDetailsController extends AbstractController
 {
     private $entityManager;
@@ -30,13 +34,19 @@ class SystemDetailsController extends AbstractController
     }
 
     #[Route('/system_details{id}', name: 'app_system_details')]
-    public function index($id): Response
+    public function index($id, Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
         $deviceRepository = $this->entityManager->getRepository(Device::class);
         $devices = $deviceRepository->findAll();
         $systemR = $this->entityManager->getRepository(Systems::class);
         $system = $systemR->find($id);
-        $user = $this->getUser();
+
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $user = $security->getUser();
         $kpiR = $this->entityManager->getRepository(KPI::class);
         $kpis = $kpiR->findAll();
 
@@ -99,6 +109,7 @@ class SystemDetailsController extends AbstractController
             'systemOwner' => $system->getUserOwner(),
             'user' => $user,
             'kpis' => $systemKPIs,
+            'role' => $user->getRoles(),
         ]);
     }
 
