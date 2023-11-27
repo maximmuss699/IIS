@@ -119,6 +119,7 @@ class SystemDetailsController extends AbstractController
             "Temperature-Sensor" => '/img/temperature.png',
             "Pressure-Sensor" => '/img/pressure.png',
             "Noise-Sensor" => '/img/noise.png',
+            "Humidity-Sensor" => '/img/humidity.png',
             default => '/public/img/unknown.png',
         };
     }

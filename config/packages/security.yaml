@@ -24,11 +24,9 @@ security:
 
                 # where to redirect after logout
                 # target: app_any_route
-            logout_on_user_change: true
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 900
-                idle_timeout: 900
                 path: /
                 always_remember_me: true
 

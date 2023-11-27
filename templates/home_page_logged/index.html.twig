@@ -78,14 +78,6 @@
                 </div>
 
 
-                <div class="dash-nav-dropdown">
-                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                        <i class="fas fa-info"></i> About </a>
-                    <div class="dash-nav-dropdown-menu">
-                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
-
-                    </div>
-                </div>
                 {% for rl in role %}
                 {% if rl == "ROLE_ADMIN"%}
                 <div class="dash-nav-dropdown">
@@ -106,6 +98,15 @@
                 </div>
                 {% endif %}
                 {% endfor %}
+
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                    </div>
+                </div>
             </nav>
         </div>
         <div class="dash-app">

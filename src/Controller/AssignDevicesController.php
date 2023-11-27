@@ -96,6 +96,7 @@ class AssignDevicesController extends AbstractController
             "Temperature-Sensor" =>  '°C',
             "Pressure-Sensor" => 'bar',
             "Noise-Sensor" => 'db',
+            "Humidity-Sensor" => '/img/humidity.png',
             default =>  '/public/img/unknown.png',
         };
     }
