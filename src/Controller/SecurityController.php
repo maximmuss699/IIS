@@ -28,6 +28,6 @@ class SecurityController extends AbstractController
     public function logout(): RedirectResponse
     {
 
-        return new RedirectResponse($this->generateUrl('home')); // Change 'home' to your homepage route name
+        return new RedirectResponse($this->generateUrl('app_home_page')); // Change 'home' to your homepage route name
     }
 }
