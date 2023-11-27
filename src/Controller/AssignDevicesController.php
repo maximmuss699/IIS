@@ -20,7 +20,10 @@ class AssignDevicesController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-
+    /*
+    * Main function
+     * Gets values from repository and passes them to twig.template
+    * */
     #[Route('/assign_devices{id}', name: 'app_assign_devices')]
     public function index($id,  Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
@@ -81,6 +84,9 @@ class AssignDevicesController extends AbstractController
             'role' => $loggedUser->getRoles(),
             ]);
     }
+        /*
+        * Conversion functions
+        * */
         public function getPicture($typeName):string
     {
         return match ($typeName) {
@@ -91,6 +97,7 @@ class AssignDevicesController extends AbstractController
             default =>  '/public/img/unknown.png',
         };
     }
+
     public function getUnit($typeName):string
     {
         return match ($typeName) {
@@ -101,6 +108,10 @@ class AssignDevicesController extends AbstractController
             default =>  '',
         };
     }
+    /*
+     * called after devices were selected
+     * assigns them to a system
+     * */
     #[Route('/assign_devices', name: 'handle_device_assignment', methods: ['POST'])]
     public function handleDeviceAssignment(Request $request): Response
     {
@@ -112,9 +123,7 @@ class AssignDevicesController extends AbstractController
 
             // Check if 'selected_devices' key exists in the form data
             if (isset($formData['selected_devices']) && is_array($formData['selected_devices'])) {
-                // Loop through each value and add to the selected device IDs array
                 foreach ($formData['selected_devices'] as $deviceId) {
-                    // Check if the value is a valid integer (or adjust validation as needed)
                     if (is_numeric($deviceId)) {
                         $selectedDeviceIds[] = (int) $deviceId; // Convert to integer and add to the array
                     }
@@ -122,6 +131,7 @@ class AssignDevicesController extends AbstractController
             }
             $systemId = $request->request->get('system_id');
             $system = $this->entityManager->getRepository(Systems::class)->find($systemId);
+            //queries for devices as a check
             $devices = $this->entityManager
                 ->getRepository(Device::class)
                 ->createQueryBuilder('d')
@@ -131,13 +141,12 @@ class AssignDevicesController extends AbstractController
                 ->getResult();
 
              foreach ($devices as $device) {
-                 $device->setSystems($system); // Assuming there's a method like setSystemId() in your Device entity
-                 // Persist changes if needed
+                 $device->setSystems($system);
+                 // Persist changes
                   $this->entityManager->persist($device);
              }
             $this->entityManager->flush();
         }
-        // Redirect or render a response if the request method is not POST
         return $this->redirectToRoute('app_system_details', ['id' => $systemId]);
     }
 

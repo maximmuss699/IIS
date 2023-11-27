@@ -51,8 +51,7 @@ class SystemRegistrationController extends AbstractController
                 'role' => $user->getRoles()
             ]);
         } else {
-            // Handle the case when the user is not authenticated
-            // For example, redirect to the login page or display an error message
+            // redirect to the login page
             return $this->redirectToRoute('app_home_page'); // Replace with your login route
         }
     }

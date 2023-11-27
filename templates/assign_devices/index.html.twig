@@ -116,7 +116,7 @@
                     transform: scale(1.5); /* Increases the scale when checked */
                 }
             </style>
-
+            <!-- Genereta cards for devices -->
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <form action="{{ path('handle_device_assignment', {'id': systemId}) }}" method="post">
@@ -165,6 +165,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Logic for handling positioning, only 3 cards per row, if there are fewer cards center them -->
                                 {% if loop.index % 3 == 0 or loop.last %}
                                     </div>
                                     {% if not loop.last %}

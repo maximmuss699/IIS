@@ -30,13 +30,10 @@ class AssignKPIController extends AbstractController
 
         $entityManager = $this->entityManager;
 
-        // Fetch the device based on the provided ID
         $device = $entityManager->getRepository(Device::class)->find($id);
 
-        // Fetch parameters filtered by the device's type
         $parameters = $device->getType()->getParameters()->toArray();
 
-        // Pass filtered parameters to the form builder options
         $form = $this->createForm(KPIType::class, $kpi, [
             'parameters' => $parameters,
         ]);

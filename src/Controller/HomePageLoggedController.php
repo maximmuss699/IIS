@@ -106,7 +106,6 @@ class HomePageLoggedController extends AbstractController
         $entityManager->remove($system);
 
         $entityManager->flush();
-        // Redirect to the forum page or wherever you want after deletion
         return $this->redirectToRoute('app_home_page_logged');
     }
 
@@ -118,7 +117,7 @@ class HomePageLoggedController extends AbstractController
         if (!empty($values)) {
             $lastValueIndex = count($values) - 1;
             $parVal = $values[$lastValueIndex];
-            // Or simply: $parVal = end($values);
+
         }
        switch ($kpi->getFunction())
        {

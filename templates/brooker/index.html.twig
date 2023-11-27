@@ -88,6 +88,7 @@
             margin-bottom: 10px;
         }
     </style>
+        <!-- Generetes Cards for all devices -->
         <main class="dash-content">
             <div class="container-fluid">
                 <div class="row justify-content-center">
@@ -105,27 +106,26 @@
                                         <h6 class="card-subtitle mb-2 text-muted text-center">Parameters:</h6>
                                     </div>
                                     <ul class="list-group list-group-flush">
+
+                                        <!--Generetes form based on parameters-->
                                         <form class="parameter-form">
                                             <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
                                             {% for parameter in deviceDetail.parameters %}
                                                 <div class="form-group text-center">
-                                                    <!-- Add color to parameter names -->
                                                     <label for="{{ parameter.name }}" style="color: #007bff;">{{ parameter.name }}</label>
-                                                    <!-- Adjust input width and center it -->
                                                     <input type="text" class="form-control mx-auto" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}" style="width: 60%;">
                                                 </div>
                                             {% endfor %}
                                             <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
                                                 Wrong input, numbers only.
                                             </div>
+                                            <div class="text-center">
+                                            <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
+                                            </div>
                                         </form>
                                     </ul>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     {% endfor %}
@@ -138,6 +138,7 @@
 
     </div>
 </div>
+    <!--Ajax script that handles form and change of values, grabs the closest card to input-->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -145,7 +146,6 @@
                 e.preventDefault();
                 var formData = $(this).serializeArray();
                 var deviceId = $(this).closest('.card').data('device-id');
-                // Append deviceId to formData
 
                 $.ajax({
                     type: 'POST',
@@ -154,12 +154,10 @@
                     success: function(response, textStatus, xhr) {
                         alert('Parameters updated successfully!');
                         location.reload();
-                        // Optionally update the UI to reflect changes
                     },
                     error: function(xhr) {
                         if (xhr.status === 403) {
                             var deviceId = xhr.responseText;
-                            // Show user not found error message
                             $('#' + deviceId).show();
                         }
                     }
@@ -167,8 +165,9 @@
             });
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="/js/spur.js"></script>
+
 {% endblock %}

@@ -68,23 +68,15 @@ class BrookerController extends AbstractController
         $entityManager = $this->entityManager;
         $formData = $request->get("form");
         $deviceId = $request->get("id");
-        // Process and save form data to the database
-        // Example: Assuming Device entity and Doctrine EntityManager are used
-
-        // Retrieve the device entity based on the deviceId
         $deviceR = $entityManager->getRepository(Device::class);
         $parameters = $entityManager->getRepository(Parameters::class)->findAll();
         $device = $deviceR->find($deviceId);
 
         if (!$device) {
-            // Handle device not found scenario
             return new Response('Device not found.', Response::HTTP_NOT_FOUND);
         }
-
         // Update device parameters based on form data
         foreach ($formData as $key => $value) {
-            // Check if the form field corresponds to a valid device parameter
-            // For example, assuming the form fields match the device properties
             if (is_int($key) && $key > 0)
             {
                 $parameter = $entityManager->getRepository(Parameters::class)->find($key);

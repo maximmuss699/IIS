@@ -28,10 +28,10 @@ class UserProfileType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'attr' => [
-                    'autocomplete' => 'off', // Optional: Disable autocomplete
-                    'placeholder' => '●●●●●●', // Placeholder for the password field
+                    'autocomplete' => 'off',
+                    'placeholder' => '●●●●●●',
                 ],
-                'label' => 'Password*', // Add asterisk to the label
+                'label' => 'Password*',
             ]);
 
         ;
