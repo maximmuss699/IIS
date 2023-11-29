@@ -56,13 +56,10 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         // For example:
 
 
-        $user = $token->getUser();
 
         // Check the user's role
 
         return new RedirectResponse($this->urlGenerator->generate('app_home_page_logged'));
-        //TODO PROPER handle
-        throwException("idk");
     }
 
     protected function getLoginUrl(Request $request): string

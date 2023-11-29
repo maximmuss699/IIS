@@ -10,28 +10,57 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Parameters;
+
+
+use Symfony\Component\Validator\Constraints as Assert;
 class KPIType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('value')
+            ->add('value', null, [
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Value is required',
+                    ]),
+                    new Assert\Type([
+                        'type' => 'numeric',
+                        'message' => 'Value must be numeric',
+                    ]),
+                ],
+                'attr' => [
+                    'placeholder' => 'Enter a numeric value *',
+                ],
+            ])
             ->add('function', ChoiceType::class, [
+                'constraints' => [
+                    new Assert\NotNull([
+                        'message' => 'Function is required',
+                    ]),
+                ],
                 'choices' => [
-                    // Populate functions here, like:
-                    'greater then' => 'gt',
-                    'less then' => 'lt',
-                    'equal to' => 'eq',
-                    'not equal to' => 'neq',
-                    // Add more as needed
+                    'Greater then' => 'gt',
+                    'Less then' => 'lt',
+                    'Equal to' => 'eq',
+                    'Not equal to' => 'neq',
+                ],
+                'attr' => [
+                    'placeholder' => 'Select a function *',
                 ],
             ])
             ->add('parameter', EntityType::class, [
                 'class' => Parameters::class,
-                'choices' => $options['parameters'], // Use passed parameters here
-                'choice_label' => 'name', // Assuming Parameter entity has a 'name' property
-                'placeholder' => 'Select a Parameter',
-                // Additional options can be added based on your requirements
+                'choices' => $options['parameters'],
+                'choice_label' => 'name',
+                'placeholder' => 'Select a Parameter *',
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Parameter is required',
+                    ]),
+                    new Assert\NotNull([
+                        'message' => 'Parameter is required',
+                    ]),
+                ],
             ]);
 
     }

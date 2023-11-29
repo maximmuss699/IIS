@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
-
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 class HomePageLoggedController extends AbstractController
 {
     private $entityManager;
@@ -21,14 +22,19 @@ class HomePageLoggedController extends AbstractController
     }
 
     #[Route('/homepage/Logged', name: 'app_home_page_logged')]
-    public function index(Security $security): Response
+    public function index(Request $request, Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
         $systemRepository = $this->entityManager->getRepository(Systems::class);
         $systems = $systemRepository->findAll();
         $kpiRepository = $this->entityManager->getRepository(KPI::class);
         $kpis = $kpiRepository->findAll();
-        $loggedUser = $security->getUser();
 
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $loggedUser = $security->getUser();
 
         $systemKpiPairs = [];
         $devices = [];
@@ -58,14 +64,28 @@ class HomePageLoggedController extends AbstractController
     }
 
     #[Route('/delete-system/{id}', name: 'delete_system')]
-    public function deleteSystem(Request $request, int $id): Response
+    public function deleteSystem(Request $request, int $id, Security $security, UrlGeneratorInterface $urlGenerator ): Response
     {
         $entityManager = $this->entityManager;
         $system = $entityManager->getRepository(Systems::class)->find($id);
         $devices = $entityManager->getRepository(Device::class)->findAll();
 
+
+
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
+
+        $user = $security->getUser();
         if (!$system) {
             throw $this->createNotFoundException('System not found');
+        }
+        if ($system->getUserOwner() !== $user)
+        {
+            $system->removeUser($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_home_page_logged');
         }
         foreach ($devices as $device)
         {
@@ -74,11 +94,18 @@ class HomePageLoggedController extends AbstractController
                 $device->setSystems(null);
             }
         }
+
+        $kpis = $entityManager->getRepository(KPI::class)->findBy(['systems' => $id]);
+        foreach ($kpis as $kpi)
+        {
+            $kpi->setParameter(null);
+            $entityManager->flush();
+            $entityManager->remove($kpi);
+        }
         $entityManager->flush();
         $entityManager->remove($system);
 
         $entityManager->flush();
-        // Redirect to the forum page or wherever you want after deletion
         return $this->redirectToRoute('app_home_page_logged');
     }
 
@@ -90,7 +117,7 @@ class HomePageLoggedController extends AbstractController
         if (!empty($values)) {
             $lastValueIndex = count($values) - 1;
             $parVal = $values[$lastValueIndex];
-            // Or simply: $parVal = end($values);
+
         }
        switch ($kpi->getFunction())
        {

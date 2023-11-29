@@ -16,7 +16,7 @@
         }
 
     </style>
-
+    <!-- Generate registration form and it's checks -->
     <section class="vh-100 gradient-custom">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -38,10 +38,11 @@
                                         'id': 'typeEmailX',
                                         'attr': {
                                             'class': 'form-control form-control-lg',
-                                            'placeholder': 'Email'
+                                            'placeholder': 'Email*'
                                         },
                                         'label': 'Email'
                                     }) }}
+                                    {{ form_errors(registrationForm.email) }} <!-- Display errors for the email field -->
                                 </div>
 
 
@@ -50,9 +51,10 @@
                                         'id': 'typePasswordX',
                                         'attr': {
                                             'class': 'form-control form-control-lg',
-                                            'placeholder': 'Password'
+                                            'placeholder': 'Password*'
                                         }
                                     }) }}
+                                    {{ form_errors(registrationForm.plainPassword) }} <!-- Display errors for the email field -->
                                 </div>
 
 

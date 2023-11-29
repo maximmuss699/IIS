@@ -5,9 +5,13 @@ use App\Entity\Systems;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
+
 class AssignUsersToSystemController extends AbstractController
 {
     private $entityManager;
@@ -16,7 +20,7 @@ class AssignUsersToSystemController extends AbstractController
         $this->entityManager = $entityManager;
     }
     #[Route('/assign/users/system{id}', name: 'app_assign_users_to_system')]
-    public function index($id): Response
+    public function index($id,  Security $security, UrlGeneratorInterface $urlGenerator): Response
     {
         $userRepository = $this->entityManager->getRepository(User::class);
         $users = $userRepository->findAll();
@@ -33,10 +37,18 @@ class AssignUsersToSystemController extends AbstractController
 
             }
         }
+        if (!$security->getUser()) {
+            $url = $urlGenerator->generate('app_home_page');
+            return new RedirectResponse($url);
+        }
 
-       return $this->render('assign_users_to_system/index.html.twig', [
+        $loggedUser = $security->getUser();
+
+
+        return $this->render('assign_users_to_system/index.html.twig', [
             'users' => $finalUsers,
             'systemId' => $id,
+            'role' => $loggedUser->getRoles()
         ]);
     }
     #[Route('/assign/users/system', name: 'handle_user_assignment', methods: ['POST'])]
