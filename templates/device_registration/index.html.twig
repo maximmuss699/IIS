@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Device{% endblock %}
+
+{% block body %} <div class="dash">
+    <div class="dash">
+        <div class="dash-nav dash-nav-dark">
+            <header>
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                    <a href="/homepage/Logged" class="logo"><i class="fas fa-charging-station"></i> <span>IoT</span></a>
+                </a>
+
+
+
+            </header>
+            <nav class="dash-nav-list">
+                <a href="/homepage/Logged" class="dash-nav-item">
+                    <i class="fas fa-home"></i> Home </a>
+
+                <a href="/user/profile" class="dash-nav-item">
+                    <i class="fa fa-user-circle"></i> User </a>
+
+
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-cube"></i> Systems </a>
+                    <div class="dash-nav-dropdown-menu">
+
+                        <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
+                    </div>
+                </div>
+
+
+
+                {% for rl in role %}
+                    {% if rl == "ROLE_ADMIN"%}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Admin</a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\admin"  class="dash-nav-dropdown-item">Admin</a>
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% elseif rl == "ROLE_BROKER" %}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Broker </a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="dash-app">
+        <header class="dash-toolbar">
+            <a href="#!" class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </a>
+
+            <div class="tools">
+
+
+                <button onclick="location.href='/logout';" type="button" class="btn custom-sign-out-btn me-2">Sign Out</button>
+            </div>
+        </header>
+
+
+        <style>
+            .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+            .title{
+                margin-bottom: 25px;
+                margin-top: 25px;
+            }
+            .subtitle{
+                margin-bottom: 10px;
+            }
+        </style>
+        <!-- Generetes Cards for all devices -->
+        <main class="dash-content">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    {% for deviceDetail in deviceDetails %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card" data-device-id="{{ deviceDetail.device.id }}" style="min-height: 400px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="title">
+                                        <div class="text-center">
+                                            <h3 class="card-title">User Alias: {{ deviceDetail.userAlias }}</h3>
+                                            <h5 class="card-text">Type Name: {{ deviceDetail.typeName }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="subtitle">
+                                        <h6 class="card-subtitle mb-2 text-muted text-center">Parameters:</h6>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+
+                                        <!--Generetes form based on parameters-->
+                                        <form class="parameter-form">
+                                            <input type="hidden" name="device_id" value="{{ deviceDetail.device.id }}">
+                                            <input type="text" name="device_description" value="{{ deviceDetail.device.description }}">
+                                            {% for parameter in deviceDetail.parameters %}
+                                                <div class="form-group text-center">
+                                                    <label for="{{ parameter.name }}" style="color: #007bff;">{{ parameter.name }}</label>
+                                                    <input type="text" class="form-control mx-auto" name="{{ parameter.id }}" value="{{ parameter.values|join(', ') }}" style="width: 60%;">
+                                                </div>
+                                            {% endfor %}
+                                            <div id="{{ deviceDetail.device.id }}" style="color: red; display: none;">
+                                                Wrong input, numbers only.
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
+                                            </div>
+                                        </form>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </main>
+
+
+
+
+    </div>
+</div>
+    <!--Ajax script that handles form and change of values, grabs the closest card to input-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.parameter-form').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $(this).serializeArray();
+                var deviceId = $(this).closest('.card').data('device-id');
+                var deviceDescription = $(this).find('input[name="device_description"]').val();
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('app_device_update') }}',
+                    data: {form: formData,
+                        id: deviceId,
+                        device_description: deviceDescription
+                    },
+                    success: function(response, textStatus, xhr) {
+                        alert('Parameters updated successfully!');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 403) {
+                            var deviceId = xhr.responseText;
+                            $('#' + deviceId).show();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/js/spur.js"></script>
+
+{% endblock %}
