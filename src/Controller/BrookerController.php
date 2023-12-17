@@ -62,9 +62,6 @@ class BrookerController extends AbstractController
             'role' => $loggedUser->getRoles()
         ]);
     }
-
-
-
     #[Route('/updateDeviceParameters', name: 'app_brooker_update', methods: ['POST'])]
     public function updateDeviceParameters(Request $request): Response
     {
@@ -106,7 +103,6 @@ class BrookerController extends AbstractController
 
         }
 
-
         // Persist changes to the database
         $entityManager->flush();
 
@@ -115,6 +111,5 @@ class BrookerController extends AbstractController
         return $response;    // Update only the parameters that were changed in the request
 
 }
-
 
 }

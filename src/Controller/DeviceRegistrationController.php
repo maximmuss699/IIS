@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Form\ParametersType;
 use App\Form\DeviceType;
 use App\Entity\Parameters;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +28,7 @@ class DeviceRegistrationController extends AbstractController
     #[Route('/device_registration', name: 'app_device_registration')]
     public function index(Security $security, UrlGeneratorInterface $urlGenerator,  Request $request): Response
     {
- $deviceRepository = $this->entityManager->getRepository(Device::class);
+        $deviceRepository = $this->entityManager->getRepository(Device::class);
         $devices = $deviceRepository->findAll();
         $deviceDetails = [];
         foreach ($devices as $device) {
@@ -52,15 +53,16 @@ class DeviceRegistrationController extends AbstractController
 
         $device = new Device();
         $form = $this->createForm(DeviceType::class, $device);
+        $form->handleRequest($request);
 
-                $form->handleRequest($request);
+       ;
 
-                if ($form->isSubmitted() && $form->isValid()) {
-
+                if ($form->isSubmitted() && $form->isValid() ) {
 
                     $this->entityManager->persist($device);
-                    $this->entityManager->flush();
 
+                    $this->entityManager->flush();
+                return $this->redirectToRoute('app_home_page_logged'); // Redirect to a success page
 
                 }
 
@@ -75,7 +77,8 @@ class DeviceRegistrationController extends AbstractController
         return $this->render('device_registration/index.html.twig', [
             'deviceDetails' => $deviceDetails,
             'role' => $loggedUser->getRoles(),
-            'form' => $form->createView()
+            'form' => $form->createView(),
+
         ]);
 }
 

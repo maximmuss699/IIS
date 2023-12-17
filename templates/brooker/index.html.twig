@@ -14,54 +14,54 @@
 
 
             </header>
-        <nav class="dash-nav-list">
-            <a href="/homepage/Logged" class="dash-nav-item">
-                <i class="fas fa-home"></i> Home </a>
+            <nav class="dash-nav-list">
+                <a href="/homepage/Logged" class="dash-nav-item">
+                    <i class="fas fa-home"></i> Home </a>
 
-            <a href="/user/profile" class="dash-nav-item">
-                <i class="fa fa-user-circle"></i> User </a>
-
-
-            <div class="dash-nav-dropdown">
-                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                    <i class="fas fa-cube"></i> Systems </a>
-                <div class="dash-nav-dropdown-menu">
-
-                    <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
-                </div>
-            </div>
+                <a href="/user/profile" class="dash-nav-item">
+                    <i class="fa fa-user-circle"></i> User </a>
 
 
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-cube"></i> Systems </a>
+                    <div class="dash-nav-dropdown-menu">
 
-            {% for rl in role %}
-                {% if rl == "ROLE_ADMIN"%}
-                    <div class="dash-nav-dropdown">
-                        <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                            <i class="fas fa-user-shield"></i> Admin</a>
-                        <div class="dash-nav-dropdown-menu">
-                            <a href="\admin"  class="dash-nav-dropdown-item">Admin</a>
-                            <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
-                        </div>
+                        <a href="/system_registration" class="dash-nav-dropdown-item">Create system</a>
                     </div>
-                {% elseif rl == "ROLE_BROKER" %}
-                    <div class="dash-nav-dropdown">
-                        <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                            <i class="fas fa-user-shield"></i> Broker </a>
-                        <div class="dash-nav-dropdown-menu">
-                            <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            <div class="dash-nav-dropdown">
-                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                    <i class="fas fa-info"></i> About </a>
-                <div class="dash-nav-dropdown-menu">
-                    <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
-
                 </div>
-            </div>
-        </nav>
+
+
+
+                {% for rl in role %}
+                    {% if rl == "ROLE_ADMIN"%}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Admin</a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\admin"  class="dash-nav-dropdown-item">Admin</a>
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% elseif rl == "ROLE_BROKER" %}
+                        <div class="dash-nav-dropdown">
+                            <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                                <i class="fas fa-user-shield"></i> Broker </a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="\brooker"  class="dash-nav-dropdown-item">Broker</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="https://github.com/TomJuh/BUT-IIS" target="_blank" class="dash-nav-dropdown-item">GitHub</a>
+
+                    </div>
+                </div>
+            </nav>
         </div>
     </div>
     <div class="dash-app">
@@ -78,16 +78,16 @@
         </header>
 
 
-    <style>
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-        .title{
-            margin-bottom: 25px;
-            margin-top: 25px;
-        }
-        .subtitle{
-            margin-bottom: 10px;
-        }
-    </style>
+        <style>
+            .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+            .title{
+                margin-bottom: 25px;
+                margin-top: 25px;
+            }
+            .subtitle{
+                margin-bottom: 10px;
+            }
+        </style>
         <!-- Generetes Cards for all devices -->
         <main class="dash-content">
             <div class="container-fluid">
@@ -120,7 +120,7 @@
                                                 Wrong input, numbers only.
                                             </div>
                                             <div class="text-center">
-                                            <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
+                                                <button type="submit" class="btn btn-primary mt-3">Update Parameters</button>
                                             </div>
                                         </form>
                                     </ul>
@@ -131,8 +131,6 @@
                     {% endfor %}
                 </div>
             </div>
-
-
         </main>
 
 
@@ -141,7 +139,7 @@
     </div>
 </div>
     <!--Ajax script that handles form and change of values, grabs the closest card to input-->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.parameter-form').on('submit', function(e) {
