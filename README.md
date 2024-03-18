@@ -13,6 +13,9 @@ Required:
 - make up (starts up docker files, detached)
 - open https://localhost in browser
 
+## Video Demonstration 
+- https://drive.google.com/file/d/1FLNiW2IsUrp-F9ICpfzM9UZMfjpPEfqq/view
+
 ## Using symfony
 ### both symfony and composer are accesible through makefile
 make sf runs symfony console inside docker 
